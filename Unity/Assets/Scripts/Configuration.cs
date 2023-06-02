@@ -9,16 +9,20 @@ public class Configuration : MonoBehaviour
     public GameObject rightRay;
     public GameObject leftRay;
 
+
+    public float redirectSpeed;
+    public float movementSpeed;
+    
     public float roadWidth;
     public float margin;
     public float forwardDetection;
     public Color detectionColor;
-    public Vector3 localDriveDirection;
-    
+    public LayerMask raycastMask; // Layer-Maske für den Raycast
+
     private float _distanceToRoad;
     private float _sideCameraAngle;
     private Quaternion _frontCameraAngle;
-    private Vector3 _currentDriveDirection;
+    private Vector3 _driveDirection;
     
     private DirectionCalculator _directionCalculator;
     private RaycastLineDetector _raycastLineDetector;
@@ -31,19 +35,18 @@ public class Configuration : MonoBehaviour
 
     private void Start()
     {
-        _currentDriveDirection = localDriveDirection.normalized;
-        Debug.Log("Current drive Direction: " + _currentDriveDirection);
+        _driveDirection = Vector3.forward;
         _distanceToRoad = _raycastLineDetector.getRayAsVector3(frontRay).y;
         Debug.Log("Distance to road: " + _distanceToRoad);
         _sideCameraAngle = (float)(Math.Atan(((roadWidth / 2) - margin) / _distanceToRoad) * 180 / Math.PI);
         Debug.Log("Camera angle: " + _sideCameraAngle);
         
         CameraRotator();
-        
     }
-    public void CameraRotator()
+
+    private void CameraRotator()
     {
-        rightRay.transform.Rotate(_currentDriveDirection, _sideCameraAngle);
-        leftRay.transform.Rotate(_currentDriveDirection, -_sideCameraAngle);
+        rightRay.transform.Rotate(_driveDirection, _sideCameraAngle);
+        leftRay.transform.Rotate(_driveDirection, -_sideCameraAngle);
     }
 }

@@ -4,8 +4,6 @@ using Vector2 = UnityEngine.Vector2;
 
 public class RaycastLineDetector : MonoBehaviour
 {
-    public LayerMask raycastMask; // Layer-Maske für den Raycast
-    
     private DirectionCalculator _directionCalculator;
     private MoveScript _moveScript;
     private Configuration _configuration;
@@ -13,7 +11,7 @@ public class RaycastLineDetector : MonoBehaviour
     private void Awake()
     {
         _directionCalculator = GetComponent<DirectionCalculator>();
-        _moveScript = GetComponent<MoveScript>();
+        _moveScript = GetComponentInParent<MoveScript>();
         _configuration = GetComponent<Configuration>();
     }
 
@@ -43,7 +41,7 @@ public class RaycastLineDetector : MonoBehaviour
         var transformVar = raycaster.transform;
         ray = new Ray(transformVar.position, -transformVar.up);
 
-        if (!Physics.Raycast(ray, out hit, Mathf.Infinity, raycastMask)) return true;
+        if (!Physics.Raycast(ray, out hit, Mathf.Infinity, _configuration.raycastMask)) return true;
         
         // Draw Raycast
         DrawRay(ray, hit, color);
@@ -67,7 +65,6 @@ public class RaycastLineDetector : MonoBehaviour
         if (renderer == null || renderer.sharedMaterial == null || renderer.sharedMaterial.mainTexture == null ||
             meshCollider == null) return;
 
-
         Debug.Log("Object hit!");
 
         // Hole die Textur des getroffenen Objekts
@@ -77,13 +74,18 @@ public class RaycastLineDetector : MonoBehaviour
         pixelUV.y *= texture.height;
 
         Color pixelColor = texture.GetPixel((int)pixelUV.x, (int)pixelUV.y);
-        
+        // Debug.Log("Farbe des pixels: " + pixelColor);
+        // Debug.Log("Die Detection Color: " + _configuration.detectionColor);
+
         // Überprüfe, ob der Pixel eine bestimmte Farbe hat
         if (pixelColor == _configuration.detectionColor)
         {
             Debug.Log("Pixel mit richtiger Farbe gefunden bei: (" + (int)pixelUV.x + ", " + (int)pixelUV.y + ")");
-
-            _moveScript.SetDirection(_directionCalculator.CalculateDirection(ray, hit, (int)pixelUV.x, (int)pixelUV.y));
+            _moveScript.SetDirection(_directionCalculator.CalculateDirection(ray, hit));
+        }
+        else
+        {
+            Debug.Log("Nicht die richtige Farbe!");
         }
     }
 

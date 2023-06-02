@@ -1,16 +1,13 @@
+using System;
 using UnityEngine;
 
 public class DirectionCalculator : MonoBehaviour
 {
-    public Vector3 CalculateDirection(Ray ray, RaycastHit targetObject, int xCoordinate, int yCoordinate)
+    public Vector3 CalculateDirection(Ray ray, RaycastHit hit)
     {
-        Transform hitTransform = targetObject.transform;
+        // Berechne den Richtungsvektor vom Kamerastandpunkt und Raycast
 
-        // Berechne die Position des Pixels in Weltkoordinaten
-        Vector3 pixelPosition = hitTransform.TransformPoint(xCoordinate, yCoordinate, 0);
-
-        // Berechne den Richtungsvektor vom Kamerastandpunkt zur Pixelposition
-        Vector3 direction = pixelPosition - ray.origin;
+        Vector3 direction = hit.point - ray.origin;
         direction.Normalize();
 
         Debug.Log("Richtungsvektor: " + direction);

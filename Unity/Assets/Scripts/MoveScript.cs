@@ -2,25 +2,32 @@ using UnityEngine;
 
 public class MoveScript : MonoBehaviour
 {
-    public float speed = 2f; // Geschwindigkeit des Objekts
-
-    private Vector3 _direction; // Richtungsvektor des Objekts
-
+    private Vector3 _swingDirection; // Richtungsvektor des Objekts
+    private Vector3 _driveDirection; // Richtungsvektor des Objekts
+    
+    private Configuration _configuration;
+    
+    private void Awake()
+    {
+        _configuration = GetComponentInChildren<Configuration>();
+    }
     private void Start()
     {
-        _direction = Vector3.right;
+        _swingDirection = Vector3.right;
+        _driveDirection = Vector3.forward;
     }
 
     void Update()
     {
         // Bewegung des Objekts
-        transform.parent.Translate(-_direction.normalized * (speed * Time.deltaTime));
+        transform.parent.Translate(-_swingDirection.normalized * (_configuration.redirectSpeed * Time.deltaTime));
+        transform.parent.Translate(_driveDirection.normalized * (_configuration.movementSpeed * Time.deltaTime));
     }
     
     public void SetDirection(Vector3 newDirection)
     {
         // Richtungsvektor setzen und auf x-Achse projizieren
-        Debug.Log(_direction);
-        _direction = Vector3.Project(newDirection, Vector3.right);
+        Debug.Log("Direction: " + _swingDirection);
+        _swingDirection = Vector3.Project(newDirection, Vector3.right);
     }
 }
