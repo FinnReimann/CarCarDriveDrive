@@ -1,0 +1,101 @@
+using System;
+using UnityEngine;
+using Vector2 = UnityEngine.Vector2;
+
+public class RaycastLineDetector : MonoBehaviour
+{
+    public LayerMask raycastMask; // Layer-Maske für den Raycast
+    
+    private DirectionCalculator _directionCalculator;
+    private MoveScript _moveScript;
+    private Configuration _configuration;
+
+    private void Awake()
+    {
+        _directionCalculator = GetComponent<DirectionCalculator>();
+        _moveScript = GetComponent<MoveScript>();
+        _configuration = GetComponent<Configuration>();
+    }
+
+    private void Update()
+    {
+        RaycastHit hit;
+        Ray ray;
+        
+        Debug.Log("Now checking for hits!");
+        if (!SendRay(_configuration.forwardCamera, out hit, out ray, Color.black))
+        {
+            LineColorDetector(ray, hit);
+        }
+        if (!SendRay(_configuration.frontCamera, out hit, out ray, Color.red))
+        {
+            LineColorDetector(ray, hit);
+        }
+        if (!SendRay(_configuration.rightCamera, out hit, out ray, Color.green))
+        {
+            LineColorDetector(ray, hit);
+        }
+        if (!SendRay(_configuration.leftCamera, out hit, out ray, Color.green))
+        {
+            LineColorDetector(ray, hit);
+        }
+    }
+
+    private bool SendRay(Camera raycastCamera, out RaycastHit hit, out Ray ray, Color color)
+    {
+        // Sende einen Raycast aus
+        var transformVar = raycastCamera.transform;
+        ray = new Ray(transformVar.position, -transformVar.up);
+
+        if (!Physics.Raycast(ray, out hit, Mathf.Infinity, raycastMask)) return true;
+        
+        // Draw Raycast
+        DrawRay(ray, hit, color);
+
+        return false;
+    }
+
+    private static void DrawRay(Ray ray, RaycastHit hit, Color color)
+    {
+        // Zeichne Raycast
+        Debug.DrawLine(ray.origin, hit.point, color);
+    }
+
+    // ReSharper disable Unity.PerformanceAnalysis
+    private void LineColorDetector(Ray ray, RaycastHit hit)
+    {
+        // Überprüfe, ob der Raycast ein Objekt getroffen hat
+        Renderer renderer = hit.collider.GetComponent<Renderer>();
+        MeshCollider meshCollider = hit.collider as MeshCollider;
+
+        if (renderer == null || renderer.sharedMaterial == null || renderer.sharedMaterial.mainTexture == null ||
+            meshCollider == null) return;
+
+
+        Debug.Log("Object hit!");
+
+        // Hole die Textur des getroffenen Objekts
+        Texture2D texture = renderer.material.mainTexture as Texture2D;
+        Vector2 pixelUV = hit.textureCoord;
+        pixelUV.x *= texture.width;
+        pixelUV.y *= texture.height;
+
+        Color pixelColor = texture.GetPixel((int)pixelUV.x, (int)pixelUV.y);
+        
+        // Überprüfe, ob der Pixel eine bestimmte Farbe hat
+        if (pixelColor == _configuration.detectionColor)
+        {
+            Debug.Log("Pixel mit richtiger Farbe gefunden bei: (" + (int)pixelUV.x + ", " + (int)pixelUV.y + ")");
+
+            _moveScript.SetDirection(_directionCalculator.CalculateDirection(ray, hit, (int)pixelUV.x, (int)pixelUV.y));
+        }
+    }
+
+    public Vector3 getRayAsVector3(Camera raycastCamera)
+    {
+        if(SendRay(raycastCamera, out var hit, out var ray, Color.black)) return Vector3.zero;
+        Vector3 hitVector = hit.point - ray.origin;
+        Debug.Log("Ray as Vector: " + hitVector);
+        return hitVector;
+    }
+}
