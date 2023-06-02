@@ -4,11 +4,10 @@ using UnityEngine.Serialization;
 
 public class Configuration : MonoBehaviour
 {
-    public Camera frontCamera;
-    public Camera backCamera;
-    public Camera rightCamera;
-    public Camera leftCamera;
-    public Camera forwardCamera;
+    public GameObject frontRay;
+    public GameObject backRay;
+    public GameObject rightRay;
+    public GameObject leftRay;
 
     public float roadWidth;
     public float margin;
@@ -34,7 +33,7 @@ public class Configuration : MonoBehaviour
     {
         _currentDriveDirection = localDriveDirection.normalized;
         Debug.Log("Current drive Direction: " + _currentDriveDirection);
-        _distanceToRoad = _raycastLineDetector.getRayAsVector3(frontCamera).y;
+        _distanceToRoad = _raycastLineDetector.getRayAsVector3(frontRay).y;
         Debug.Log("Distance to road: " + _distanceToRoad);
         _sideCameraAngle = (float)(Math.Atan(((roadWidth / 2) - margin) / _distanceToRoad) * 180 / Math.PI);
         Debug.Log("Camera angle: " + _sideCameraAngle);
@@ -44,8 +43,7 @@ public class Configuration : MonoBehaviour
     }
     public void CameraRotator()
     {
-        rightCamera.transform.Rotate(_currentDriveDirection, _sideCameraAngle);
-        leftCamera.transform.Rotate(_currentDriveDirection, -_sideCameraAngle);
-        forwardCamera.transform.Rotate(_currentDriveDirection, 90);
+        rightRay.transform.Rotate(_currentDriveDirection, _sideCameraAngle);
+        leftRay.transform.Rotate(_currentDriveDirection, -_sideCameraAngle);
     }
 }

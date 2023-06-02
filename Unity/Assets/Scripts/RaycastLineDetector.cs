@@ -23,28 +23,24 @@ public class RaycastLineDetector : MonoBehaviour
         Ray ray;
         
         Debug.Log("Now checking for hits!");
-        if (!SendRay(_configuration.forwardCamera, out hit, out ray, Color.black))
+        if (!SendRay(_configuration.frontRay, out hit, out ray, Color.red))
         {
             LineColorDetector(ray, hit);
         }
-        if (!SendRay(_configuration.frontCamera, out hit, out ray, Color.red))
+        if (!SendRay(_configuration.rightRay, out hit, out ray, Color.green))
         {
             LineColorDetector(ray, hit);
         }
-        if (!SendRay(_configuration.rightCamera, out hit, out ray, Color.green))
-        {
-            LineColorDetector(ray, hit);
-        }
-        if (!SendRay(_configuration.leftCamera, out hit, out ray, Color.green))
+        if (!SendRay(_configuration.leftRay, out hit, out ray, Color.green))
         {
             LineColorDetector(ray, hit);
         }
     }
 
-    private bool SendRay(Camera raycastCamera, out RaycastHit hit, out Ray ray, Color color)
+    private bool SendRay(GameObject raycaster, out RaycastHit hit, out Ray ray, Color color)
     {
         // Sende einen Raycast aus
-        var transformVar = raycastCamera.transform;
+        var transformVar = raycaster.transform;
         ray = new Ray(transformVar.position, -transformVar.up);
 
         if (!Physics.Raycast(ray, out hit, Mathf.Infinity, raycastMask)) return true;
@@ -91,9 +87,9 @@ public class RaycastLineDetector : MonoBehaviour
         }
     }
 
-    public Vector3 getRayAsVector3(Camera raycastCamera)
+    public Vector3 getRayAsVector3(GameObject raycaster)
     {
-        if(SendRay(raycastCamera, out var hit, out var ray, Color.black)) return Vector3.zero;
+        if(SendRay(raycaster, out var hit, out var ray, Color.black)) return Vector3.zero;
         Vector3 hitVector = hit.point - ray.origin;
         Debug.Log("Ray as Vector: " + hitVector);
         return hitVector;
