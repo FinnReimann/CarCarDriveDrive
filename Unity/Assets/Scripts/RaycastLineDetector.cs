@@ -4,13 +4,11 @@ using Vector2 = UnityEngine.Vector2;
 
 public class RaycastLineDetector : MonoBehaviour
 {
-    private DirectionCalculator _directionCalculator;
     private MoveScript _moveScript;
     private Configuration _configuration;
 
     private void Awake()
     {
-        _directionCalculator = GetComponent<DirectionCalculator>();
         _moveScript = GetComponentInParent<MoveScript>();
         _configuration = GetComponent<Configuration>();
     }
@@ -21,15 +19,15 @@ public class RaycastLineDetector : MonoBehaviour
         Ray ray;
         
         Debug.Log("Now checking for hits!");
-        if (!SendRay(_configuration.frontRay, out hit, out ray, Color.red))
+        if (!SendRay(_configuration.frontDetector, out hit, out ray, Color.red))
         {
             LineColorDetector(ray, hit);
         }
-        if (!SendRay(_configuration.rightRay, out hit, out ray, Color.green))
+        if (!SendRay(_configuration.rightDetector, out hit, out ray, Color.green))
         {
             LineColorDetector(ray, hit);
         }
-        if (!SendRay(_configuration.leftRay, out hit, out ray, Color.green))
+        if (!SendRay(_configuration.leftDetector, out hit, out ray, Color.green))
         {
             LineColorDetector(ray, hit);
         }
@@ -58,14 +56,19 @@ public class RaycastLineDetector : MonoBehaviour
     // ReSharper disable Unity.PerformanceAnalysis
     private void LineColorDetector(Ray ray, RaycastHit hit)
     {
+        // Detecting Line Now
+        // Debug.Log("Detecting Line Now!");
+        
         // Überprüfe, ob der Raycast ein Objekt getroffen hat
         Renderer renderer = hit.collider.GetComponent<Renderer>();
         MeshCollider meshCollider = hit.collider as MeshCollider;
-
+        
+        // Nullpointer Check
         if (renderer == null || renderer.sharedMaterial == null || renderer.sharedMaterial.mainTexture == null ||
             meshCollider == null) return;
 
-        Debug.Log("Object hit!");
+        // Object Hit!
+        //Debug.Log("Object hit!");
 
         // Hole die Textur des getroffenen Objekts
         Texture2D texture = renderer.material.mainTexture as Texture2D;
@@ -73,6 +76,7 @@ public class RaycastLineDetector : MonoBehaviour
         pixelUV.x *= texture.width;
         pixelUV.y *= texture.height;
 
+        // Get Pixel Color
         Color pixelColor = texture.GetPixel((int)pixelUV.x, (int)pixelUV.y);
         // Debug.Log("Farbe des pixels: " + pixelColor);
         // Debug.Log("Die Detection Color: " + _configuration.detectionColor);
@@ -80,8 +84,11 @@ public class RaycastLineDetector : MonoBehaviour
         // Überprüfe, ob der Pixel eine bestimmte Farbe hat
         if (pixelColor == _configuration.detectionColor)
         {
-            Debug.Log("Pixel mit richtiger Farbe gefunden bei: (" + (int)pixelUV.x + ", " + (int)pixelUV.y + ")");
-            _moveScript.SetDirection(_directionCalculator.CalculateDirection(ray, hit));
+            // Pixel mit richtiger Farbe gefunden
+            //Debug.Log("Pixel mit richtiger Farbe gefunden bei: (" + (int)pixelUV.x + ", " + (int)pixelUV.y + ")");
+            
+            // Fahrzeug rotieren
+            _moveScript.ChangeRotation(ray, hit);
         }
         else
         {
