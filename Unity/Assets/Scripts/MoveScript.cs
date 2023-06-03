@@ -20,13 +20,19 @@ public class MoveScript : MonoBehaviour
     void Update()
     {
         DriveForward();
-        RotateVehicle();
+        ApplyRotation();
     }
 
     private void DriveForward()
     {
         // Bewegung des Objekts
         transform.parent.Translate(_driveDirection.normalized * (_configuration.movementSpeed * Time.deltaTime));
+    }
+    
+    private void ApplyRotation()
+    {
+        // Rotiere das Objekt um die Y-Achse basierend auf der Eingabe
+        transform.parent.Rotate(Vector3.up, _rotationSpeed * Time.deltaTime);
     }
 
     public void ChangeRotation(Ray ray, RaycastHit hit)
@@ -36,25 +42,24 @@ public class MoveScript : MonoBehaviour
         // Überprüfe das Vorzeichen der X-Komponente, um die Richtung zu bestimmen
         if (localDirection.x > 0f)
         {
-            // Push Vehicle to the left
             Debug.Log("Raycast geht in positive X-Richtung der Kamera.");
-            _rotationSpeed = -_configuration.steeringSpeed;
+            TurnVehicle(-1f); // Lenke das Fahrzeug nach links
         }
         else if (localDirection.x < 0f)
         {
-            // Push Vehicle to the right
             Debug.Log("Raycast geht in negative X-Richtung der Kamera.");
-            _rotationSpeed = _configuration.steeringSpeed;
+            TurnVehicle(1f); // Lenke das Fahrzeug nach rechts
         }
         else
         {
             Debug.Log("Raycast geht nicht in die X-Richtung der Kamera.");
+            TurnVehicle(0f); // Keine Änderung der Rotation
         }
     }
 
-    private void RotateVehicle()
+    public void TurnVehicle(float rotationAmount)
     {
-        // Rotiere das Objekt um die Y-Achse basierend auf der Eingabe
-        transform.parent.Rotate(Vector3.up, _rotationSpeed * Time.deltaTime);
+        // Ändere die Rotationsgeschwindigkeit basierend auf dem übergebenen Wert
+        _rotationSpeed = _configuration.steeringSpeed * rotationAmount;
     }
 }

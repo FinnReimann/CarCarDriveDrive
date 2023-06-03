@@ -1374,10 +1374,10 @@ MonoBehaviour:
   backDetector: {fileID: 1572543811}
   rightDetector: {fileID: 650285273}
   leftDetector: {fileID: 1822256391}
-  movementSpeed: 2
-  steeringSpeed: 0.4
+  movementSpeed: 5
+  steeringSpeed: 1
   roadWidth: 3.3
-  margin: 0.1
+  margin: 0
   frontDetection: 5
   detectionColor: {r: 1, g: 1, b: 1, a: 1}
   raycastMask:

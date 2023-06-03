@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 using Vector2 = UnityEngine.Vector2;
 
-public class RaycastLineDetector : MonoBehaviour
+public class LineDetector : MonoBehaviour
 {
     private MoveScript _moveScript;
     private Configuration _configuration;
@@ -95,12 +95,22 @@ public class RaycastLineDetector : MonoBehaviour
             Debug.Log("Nicht die richtige Farbe!");
         }
     }
-
-    public Vector3 getRayAsVector3(GameObject raycaster)
+    
+    public Vector3 GetRayAsVector3(GameObject raycaster)
     {
-        if(SendRay(raycaster, out var hit, out var ray, Color.black)) return Vector3.zero;
+        RaycastHit hit;
+        Ray ray;
+    
+        if (SendRay(raycaster, out hit, out ray, Color.black))
+        {
+            // Kein Treffer, gib einen Nullvektor zurück
+            return Vector3.zero;
+        }
+    
         Vector3 hitVector = hit.point - ray.origin;
-        Debug.Log("Ray as Vector: " + hitVector);
+        //Debug.Log("Ray as Vector: " + hitVector);
+    
         return hitVector;
     }
+    
 }

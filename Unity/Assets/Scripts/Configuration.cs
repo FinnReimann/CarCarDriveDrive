@@ -23,11 +23,11 @@ public class Configuration : MonoBehaviour
     private float _frontDetectorAngle;
     private Vector3 _driveDirection;
     
-    private RaycastLineDetector _raycastLineDetector;
+    private LineDetector _lineDetector;
 
     private void Awake()
     {
-        _raycastLineDetector = GetComponent<RaycastLineDetector>();
+        _lineDetector = GetComponent<LineDetector>();
     }
 
     private void Start()
@@ -38,14 +38,14 @@ public class Configuration : MonoBehaviour
         ProcessMathRotation();
         
         // Apply Detector Angles
-        CameraRotator();
+        RotateDetector();
     }
 
     private void ProcessMathRotation()
     {
         // Get distance to Ground
         // Debug.Log("Distance to road: " + _distanceToRoad);
-        _distanceToRoad = _raycastLineDetector.getRayAsVector3(frontDetector).y;
+        _distanceToRoad = _lineDetector.GetRayAsVector3(frontDetector).y;
         
         // Calculate Angles for SideDetectors
         // Debug.Log("Camera angle: " + _sideDetectorAngle);
@@ -55,10 +55,15 @@ public class Configuration : MonoBehaviour
         _frontDetectorAngle = (float)(Math.Atan(frontDetection / _distanceToRoad) * 180 / Math.PI);
     }
 
-    private void CameraRotator()
+    private void RotateDetector()
     {
+        // Rotate to the Side
         rightDetector.transform.Rotate(_driveDirection, _sideDetectorAngle);
         leftDetector.transform.Rotate(_driveDirection, -_sideDetectorAngle);
+        
+        // Rotate to the Front
         frontDetector.transform.Rotate(Vector3.right, _frontDetectorAngle);
+        //leftDetector.transform.Rotate(Vector3.right, _frontDetectorAngle);
+        //rightDetector.transform.Rotate(Vector3.right, _frontDetectorAngle);
     }
 }
