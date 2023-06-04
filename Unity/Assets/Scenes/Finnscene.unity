@@ -908,11 +908,11 @@ MonoBehaviour:
   minAngle: 0
   maxAngle: 0
   maxRayLength: 0
+  detectionAngle: 0
   maxSpeed: 0
   steeringBehavior: 0
-  detectionAngle: 0
   accelerationBehavior: 0
-  raycastMask:
+  layerMask:
     serializedVersion: 2
     m_Bits: 64
 --- !u!114 &1503250872
