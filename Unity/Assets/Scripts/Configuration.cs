@@ -12,10 +12,18 @@ public class Configuration : MonoBehaviour
     [SerializeField]
     [Header("Ray Settings")]
     private int rayCount;
-    [SerializeField] private float minAngle;
-    [SerializeField] private float maxAngle;
-    [SerializeField] private float maxRayLength;
-    [SerializeField] private float detectionAngle;
+    [SerializeField] 
+    [Range(0f, 90f)]
+    private float minAngle;
+    [SerializeField] 
+    [Range(0f, 90f)]
+    private float maxAngle;
+    [SerializeField] 
+    [Range(1f, 100f)]
+    private float maxRayLength;
+    [SerializeField] 
+    [Range(0f, 90f)]
+    private float detectionAngle;
 
 // Geschwindigkeit und Steuerungsverhalten
     [SerializeField]
