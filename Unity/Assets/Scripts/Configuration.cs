@@ -12,6 +12,8 @@ public class Configuration : MonoBehaviour
     [SerializeField]
     [Header("Ray Settings")]
     private int rayCount;
+    [SerializeField]
+    private int increasingRays;
     [SerializeField] 
     [Range(0f, 90f)]
     private float minAngle;
@@ -48,6 +50,12 @@ public class Configuration : MonoBehaviour
     {
         get => rayCount;
         set => rayCount = value;
+    }
+    
+    public int IncreasingRays
+    {
+        get => increasingRays;
+        set => increasingRays = value;
     }
 
     public float MinAngle
