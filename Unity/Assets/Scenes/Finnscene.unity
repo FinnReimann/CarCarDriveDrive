@@ -1023,11 +1023,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   demoMode: 1
   rayCount: 8
-  increasingRays: 4
-  minAngle: 45
+  increasingRays: 5
+  minAngle: 40
   maxAngle: 70
   maxRayLength: 8
-  detectionAngle: 20
+  detectionAngle: 30
   maxSpeed: 0
   steeringBehavior: 0
   accelerationBehavior: 0
