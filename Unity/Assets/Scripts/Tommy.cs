@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Tommy : MonoBehaviour
+public class Tommy : MonoBehaviour, Observee
 {
     private Quaternion[] _angles;
     private Ray _ray;
@@ -163,6 +163,8 @@ public class Tommy : MonoBehaviour
         return pressure;
     } */
 
+    
+    // Update Event raussenden statt dem kram todo
     private void CalculateCurrentPressure()
     {
         _currentPressure = CalculateSidedPressure(-1) - CalculateSidedPressure(1);
