@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Palmmedia.ReportGenerator.Core.Parser.Analysis;
 using UnityEngine;
 
-public class Brain : MonoBehaviour, Observer, Observee
+public class Brain : ObserveeMonoBehaviour, Observer
 {
     private float _currentSpeed;
     private float _currentPressur;
@@ -16,7 +17,8 @@ public class Brain : MonoBehaviour, Observer, Observee
     // Update is called once per frame
     void Update()
     {
-        
+        CCDDEvents e = new DriveControllEvent();
+        NotifyObservers(e);
     }
     
     
@@ -32,11 +34,17 @@ public class Brain : MonoBehaviour, Observer, Observee
         {
             _currentPressur = pressureChangeEvent.CurrentPressure;
         }
-        
+/*
+        if (e is NavigationEvent navigationEvent)
+        {
+            
+        }
+  */      
     }
 
-    void NotifyObservers(Event e)
+    private void calculateDriveControll()
     {
-        throw new NotImplementedException();
+        CCDDEvents e = new DriveControllEvent();
+        NotifyObservers(e);
     }
 }

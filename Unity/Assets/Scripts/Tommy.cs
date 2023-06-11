@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Tommy : MonoBehaviour, Observee
+public class Tommy : ObserveeMonoBehaviour
 {
     private Quaternion[] _angles;
     private Ray _ray;

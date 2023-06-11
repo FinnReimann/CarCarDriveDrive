@@ -4,21 +4,13 @@ using UnityEngine;
 
 public interface Observee
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public void NotifyObservers(CCDDEvents e);
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+}
 
-    protected void NotifyObservers(CCDDEvents e)
+public class ObserveeMonoBehaviour : MonoBehaviour, Observee {
+    public void NotifyObservers(CCDDEvents e)
     {
-        
+        Debug.Log("das scheint zu gehen");
     }
-    
 }
