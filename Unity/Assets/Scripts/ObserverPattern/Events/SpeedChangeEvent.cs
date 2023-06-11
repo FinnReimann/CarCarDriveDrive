@@ -8,26 +8,4 @@ public class SpeedChangeEvent : ChangeEvents
     public float ChangeDelta {set; get; }
     public float RecentAverageSpeed {set; get; }
     
-
-
-    
-    
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
-    public void Testest()
-    {
-        
-    }
-    
-    
 }

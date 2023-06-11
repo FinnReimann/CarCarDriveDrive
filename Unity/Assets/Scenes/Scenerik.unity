@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.12731713, g: 0.13414736, b: 0.12107852, a: 1}
+  m_IndirectSpecularColor: {r: 0.12731715, g: 0.13414735, b: 0.121078536, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -866,7 +866,6 @@ GameObject:
   - component: {fileID: 1503250869}
   - component: {fileID: 1503250871}
   - component: {fileID: 1503250875}
-  - component: {fileID: 1503250874}
   - component: {fileID: 1503250873}
   - component: {fileID: 1503250872}
   m_Layer: 0
@@ -905,14 +904,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   demoMode: 0
   rayCount: 0
-  minAngle: 0
+  increasingRays: 0
+  minAngle: 7.2
   maxAngle: 0
   maxRayLength: 0
+  detectionAngle: 0
   maxSpeed: 0
   steeringBehavior: 0
-  detectionAngle: 0
   accelerationBehavior: 0
-  raycastMask:
+  layerMask:
     serializedVersion: 2
     m_Bits: 64
 --- !u!114 &1503250872
@@ -939,18 +939,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d29ac6ada87b21e43a6e34cfa173d0ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1503250874
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1503250868}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 566cedc4965f7fb4aae2f39327c88e09, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1503250875
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -963,6 +951,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2e2a1990fe7604f8097b6700073fa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  accelerationResponse: 0.5
+  startingBehabior: 0.75
+  useDebugVariables: 1
+  debug_currentSpeed: 0
+  debug_targetSpeed: 10
+  debug_currentPressur: 0
 --- !u!1001 &1649707287
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -4,4 +4,7 @@ using UnityEngine;
 
 public class DriveControllEvent : CCDDEvents
 {
+    public float Accelerate {set; get; }
+    public float Break {set; get; }
+    public float Steer {set; get; }
 }
