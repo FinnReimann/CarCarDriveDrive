@@ -4,6 +4,14 @@ using UnityEngine;
 
 public class SpeedChangeEvent : ChangeEvents
 {
+    public float CurrentSpeed {set; get; }
+    public float ChangeDelta {set; get; }
+    public float RecentAverageSpeed {set; get; }
+    
+
+
+    
+    
     // Start is called before the first frame update
     void Start()
     {
@@ -15,4 +23,11 @@ public class SpeedChangeEvent : ChangeEvents
     {
         
     }
+
+    public void Testest()
+    {
+        
+    }
+    
+    
 }

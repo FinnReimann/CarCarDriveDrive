@@ -15,4 +15,10 @@ public interface Observee
     {
         
     }
+
+    protected void NotifyObservers(CCDDEvents e)
+    {
+        
+    }
+    
 }

@@ -15,4 +15,9 @@ public interface Observer
     {
         
     }
+
+    void CCDDUpdate(CCDDEvents e)
+    {
+        
+    }
 }

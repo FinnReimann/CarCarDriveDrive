@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ChangeSpeedEvent : ChangeEvents
+public class PressureChangeEvent : ChangeEvents
 {
+    public float CurrentPressure {set; get; }
+    
     // Start is called before the first frame update
     void Start()
     {
