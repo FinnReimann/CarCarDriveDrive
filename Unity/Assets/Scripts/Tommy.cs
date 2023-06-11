@@ -85,7 +85,7 @@ public class Tommy : ObserveeMonoBehaviour
         {
             // Get Ray Direction
             Vector3 rayDirection = _angles[i] * transform.forward;
-            Debug.Log("Richtungswinkel: " + rayDirection);
+            Debug.Log("Tommy: Richtungswinkel: " + rayDirection);
 
             // Create Ray
             _ray = new Ray(currentPosition, rayDirection);
@@ -137,7 +137,7 @@ public class Tommy : ObserveeMonoBehaviour
         float pressure = 1f - (sum / totalWeight);
         pressure = Mathf.Clamp01(pressure);
 
-        Debug.Log(pressure);
+        Debug.Log("Tommy: " + pressure);
         return pressure;
     }
 
