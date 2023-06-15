@@ -42,9 +42,6 @@ public class Brain : ObserveeMonoBehaviour, Observer
         
         
         calculateDriveControll();
-
-        //CCDDEvents e = new DriveControllEvent();
-        //NotifyObservers(e);
     }
     
     
@@ -122,8 +119,6 @@ public class Brain : ObserveeMonoBehaviour, Observer
         {   // If under 0.5 the curveBehavior Faktor is between -10 and 0
             y = 20f*curveBehavior-10f;
         }
-
-        
         return (-(x / (1/startingPoint)) + 1*startingPoint) * Mathf.Exp(x*y);
     }
     

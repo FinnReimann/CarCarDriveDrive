@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.TestTools;
 
 public class Tacho : ObserveeMonoBehaviour
 {
@@ -26,9 +27,7 @@ public class Tacho : ObserveeMonoBehaviour
     void FixedUpdate()
     {
         // Send Speed Data
-        SpeedChangeEvent speedChangeEvent = new SpeedChangeEvent();
-        speedChangeEvent.CurrentSpeed = CalculateSpeed();
-        speedChangeEvent.RecentAverageSpeed = CalculateRecentAverageSpeed();
+        SpeedChangeEvent speedChangeEvent = new SpeedChangeEvent(CalculateSpeed(), CalculateRecentAverageSpeed());
         if (debug)
             Debug.Log("Tacho: CurrentPosition: " + transform.position + " CurrentSpeed: " + speedChangeEvent.CurrentSpeed + " RecentAverageSpeed: " + speedChangeEvent.RecentAverageSpeed);
         NotifyObservers(speedChangeEvent);
@@ -39,7 +38,7 @@ public class Tacho : ObserveeMonoBehaviour
         Vector3 currentPosition = transform.position;
         float distance = Vector3.Distance(_lastPosition, currentPosition);
         _lastPosition = currentPosition;
-        float speed = distance *  (1 / Time.deltaTime);
+        float speed = distance *  (1 / Time.fixedDeltaTime);
         UpdatLastValuesQueue(speed);
         return speed;
     }
@@ -50,7 +49,7 @@ public class Tacho : ObserveeMonoBehaviour
         _lastValues.Dequeue();
     }
 
-    float CalculateRecentAverageSpeed()
+    private float CalculateRecentAverageSpeed()
     {
         float result = 0f;
         foreach (float value in _lastValues)
@@ -59,5 +58,6 @@ public class Tacho : ObserveeMonoBehaviour
         }
         return result/QueueSize;
     }
-    
+
+    public bool IsTestFinished { get; }
 }
