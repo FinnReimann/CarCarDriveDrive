@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Tommy : ObserveeMonoBehaviour
 {
-    private Quaternion[] _angles;
+    private Vector3[] _angles;
     private Ray _ray;
     private float _currentPressure;
     
@@ -13,46 +13,24 @@ public class Tommy : ObserveeMonoBehaviour
         _configuration = GetComponent<Configuration>();
     }
 
-    private void Start()
-    {
-        //CalculateAngle();
-    }
-
     private void Update()
     {
         //SendRays();
         CalculateCurrentPressure();
     }
 
-    /*private void CalculateAngle(float direction)
-    {
-        int rayCount = _configuration.RayCount;
-        _angles = new Quaternion[rayCount];
-        
-        float rayAngleTotal = _configuration.MaxAngle - _configuration.MinAngle;
-        float rayAnglePartial = rayAngleTotal / (rayCount - 1);
-        
-        float detectionAngle = _configuration.DetectionAngle;
-
-        for (int i = 0; i < rayCount; i++)
-        {
-            Vector3 eulerRotation = new Vector3(detectionAngle - i, ((i) * rayAnglePartial + _configuration.MinAngle) * direction, 0f);
-            Vector3 rotatedForward = transform.TransformDirection(Vector3.forward);
-            Quaternion rotation = Quaternion.LookRotation(rotatedForward, transform.up) * Quaternion.Euler(eulerRotation);
-            _angles[i] = rotation;
-        }
-    }*/
-    
     private void CalculateAngle(float direction)
     {
-        // Initialiesierung des Quanternionen Arrays
+        // Initialiesierung des Winkel Arrays
         int rayCount = _configuration.RayCount;
-        _angles = new Quaternion[rayCount];
+        _angles = new Vector3[rayCount];
         
         // Rotationswinkel um die X-Achse
         float rotationX = _configuration.DetectionAngle;
+        transform.rotation = Quaternion.Euler(rotationX, 0f, 0f);
 
         // Vorzeichen für die Drehrichtung um die Z-Achse => direction
+        Vector3 forwardDirection = transform.forward;
 
         // Ray Winkelteilung berechnen
         float rayAngleTotal = _configuration.MaxAngle - _configuration.MinAngle;
@@ -62,10 +40,13 @@ public class Tommy : ObserveeMonoBehaviour
         for (int i = 0; i < rayCount; i++)
         {
             // Raywinkel berechnen
-            float rotationZ = i * rayAnglePartial + _configuration.MinAngle;
+            float rayAngle = i * rayAnglePartial + _configuration.MinAngle;
             
             // Winkel als Quaternion
-            _angles[i] = Quaternion.Euler(0f, 0f, rotationZ * direction) * Quaternion.Euler(rotationX + (i*1), 0f, 0f);
+            //_angles[i] = Quaternion.Euler(-(rotationX + (i * 1)), rotationY, rotationZ * direction) * forwardDirection;
+            //new Vector3(rotationX + (i*1), 0f, rotationZ * direction)
+            // Quaternion.Euler(rotationX + (i*1),0f,0f)
+            _angles[i] = Quaternion.Euler(0f, rayAngle * direction, 0f) * forwardDirection;
         }
     }
 
@@ -84,7 +65,7 @@ public class Tommy : ObserveeMonoBehaviour
         for (int i = 0; i < rayCount; i++)
         {
             // Get Ray Direction
-            Vector3 rayDirection = _angles[i] * transform.forward;
+            Vector3 rayDirection = _angles[i];
             Debug.Log("Tommy: Richtungswinkel: " + rayDirection);
 
             // Create Ray
