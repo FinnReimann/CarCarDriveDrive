@@ -868,7 +868,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1069719582}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 975e7ccd91888b2469869eb46184dbc8, type: 3}
   m_Name: 
@@ -1025,10 +1025,10 @@ MonoBehaviour:
   demoMode: 1
   rayCount: 8
   increasingRays: 5
-  minAngle: 40
-  maxAngle: 70
+  minAngle: 8
+  maxAngle: 24
   maxRayLength: 8
-  detectionAngle: 30
+  detectionAngle: 10
   maxSpeed: 0
   steeringBehavior: 0
   accelerationBehavior: 0
@@ -1042,7 +1042,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1503250868}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15930336e5d4b0b40a5428bae4d6be94, type: 3}
   m_Name: 
