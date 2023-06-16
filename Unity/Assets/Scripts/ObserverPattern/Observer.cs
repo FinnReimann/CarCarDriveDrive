@@ -4,6 +4,7 @@ using UnityEngine;
 
 public interface Observer
 {
-  
-    void CCDDUpdate(CCDDEvents e){}
+
+    // Receive update from subject
+    void CCDDUpdate(CCDDEvents e);
 }
