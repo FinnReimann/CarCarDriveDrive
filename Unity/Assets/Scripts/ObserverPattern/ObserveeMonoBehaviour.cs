@@ -53,18 +53,14 @@ public class ObserveeMonoBehaviour : MonoBehaviour
     // Notify all observers about an event.
     public void NotifyObservers(CCDDEvents e)
     {
-        Debug.Log("Subject: Notifying Observers...");
+        //Debug.Log("Subject: Notifying Observers...");
         foreach (Observer observer in observers)
         {
             observer.CCDDUpdate(e);
         }
-        if (e is SpeedChangeEvent)
-        {
-            Debug.Log("Observee: Ein Speed Change Event wurde nicht weitergeleitet, weil die Methode nicht implementiert ist, aber bis hier funktioniert alles noch. Nice!");
-        }
         if (e is DriveControllEvent)
         {
-            Debug.Log("Observee :Ein Drive Controll Event wurde nicht weitergeleitet, weil die Methode nicht implementiert ist, aber bis hier funktioniert alles noch. Nice!");
+            //Debug.Log("Observee: Ein Drive Controll Event wurde nicht weitergeleitet, weil die Methode nicht implementiert ist, aber bis hier funktioniert alles noch. Nice!");
         }
     }
 }
