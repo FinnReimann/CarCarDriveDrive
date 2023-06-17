@@ -625,7 +625,8 @@ MonoBehaviour:
   _MinAcc: -1
   _MaxBrake: 1
   _MinBrake: -1
-  _MaxVelocity: 2
+  maxSteeringAngle: 60
+  _MaxVelocity: 5
 --- !u!1 &614817983
 GameObject:
   m_ObjectHideFlags: 0
@@ -1083,9 +1084,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   changeValues: 0
-  acceleration: 0
+  acceleration: 1
   breaking: 0
-  steering: 0
+  steering: 1
 --- !u!1001 &1649707287
 PrefabInstance:
   m_ObjectHideFlags: 0

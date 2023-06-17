@@ -19,6 +19,7 @@ public class Driver : MonoBehaviour, Observer
     [SerializeField]private float _MinAcc = -1.0f;
     [SerializeField]private float _MaxBrake = 1.0f;
     [SerializeField]private float _MinBrake = -1.0f;
+    [SerializeField]private float maxSteeringAngle = 60.0f;
 
     //Steering
     private float steeringSpeed;
@@ -60,7 +61,7 @@ public class Driver : MonoBehaviour, Observer
         //*****************
         //steering
         if(steeringSpeed != 0)
-            car.transform.Rotate(Vector3.up, steeringSpeed * Time.deltaTime);
+            car.transform.Rotate(Vector3.up, maxSteeringAngle * steeringSpeed * Time.deltaTime);
 
         //acceleration
         if (accSpeed != 0)
