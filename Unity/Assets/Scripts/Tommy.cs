@@ -1,22 +1,16 @@
+using System;
 using UnityEngine;
 
 public class Tommy : ObserveeMonoBehaviour
 {
     private Vector3[] _angles;
     private Ray _ray;
-    private float _currentPressure;
-    
+
     private Configuration _configuration;
 
     private void Awake()
     {
         _configuration = GetComponent<Configuration>();
-    }
-
-    private void Update()
-    {
-        //SendRays();
-        CalculateCurrentPressure();
     }
 
     private void CalculateAngle(float direction)
@@ -146,11 +140,16 @@ public class Tommy : ObserveeMonoBehaviour
 
     
     // Update Event raussenden statt dem kram todo
-    private void CalculateCurrentPressure()
+    private float CalculateCurrentPressure()
     {
-        _currentPressure = CalculateSidedPressure(-1) - CalculateSidedPressure(1);
+        float currentPressure = CalculateSidedPressure(-1) - CalculateSidedPressure(1);
         //Debug.Log("CurrentPressure: " + _currentPressure);
+        return currentPressure;
     }
 
-    public float CurrentPressure => _currentPressure;
+    private void FixedUpdate()
+    {
+        PressureChangeEvent pressureChangeEvent = new PressureChangeEvent(CalculateCurrentPressure());
+        NotifyObservers(pressureChangeEvent);
+    }
 }
