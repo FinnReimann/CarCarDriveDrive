@@ -10,6 +10,7 @@ public class Tacho : ObserveeMonoBehaviour
     private Vector3 _lastPosition;
     [Header("Debug Variables")] 
     [SerializeField] private bool debug = false;
+    private SpeedChangeEvent _lastSpeedChangeEvent;
     
     // Start is called before the first frame update
     public void Start()
@@ -21,6 +22,7 @@ public class Tacho : ObserveeMonoBehaviour
             _lastValues.Enqueue(0);
         }
         _lastPosition = transform.position;
+        _lastSpeedChangeEvent = new SpeedChangeEvent(-1f,-1f);
     }
 
     // Update is called once per frame
@@ -28,9 +30,11 @@ public class Tacho : ObserveeMonoBehaviour
     {
         // Send Speed Data
         SpeedChangeEvent speedChangeEvent = new SpeedChangeEvent(CalculateSpeed(), CalculateRecentAverageSpeed());
+        if(speedChangeEvent.RecentAverageSpeed != _lastSpeedChangeEvent.RecentAverageSpeed)
+            NotifyObservers(speedChangeEvent);
+        _lastSpeedChangeEvent = speedChangeEvent;
         if (debug)
             Debug.Log("Tacho: CurrentPosition: " + transform.position + " CurrentSpeed: " + speedChangeEvent.CurrentSpeed + " RecentAverageSpeed: " + speedChangeEvent.RecentAverageSpeed);
-        NotifyObservers(speedChangeEvent);
     }
 
     float CalculateSpeed()

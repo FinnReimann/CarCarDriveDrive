@@ -32,16 +32,16 @@ public class Driver : MonoBehaviour, Observer
     private void Awake()
     {
         car = GameObject.FindGameObjectWithTag("Vehicle");
-        _observee = car.GetComponent<TestObservee>();
-        //brainToWatch = car.GetComponentInChildren<Brain>();
+        //_observee = car.GetComponent<TestObservee>();
+        brainToWatch = car.GetComponentInChildren<Brain>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
         //Nachrichten vom Brain abonnieren
-        //brainToWatch.Attach(this);
-        _observee.Attach(this);
+        brainToWatch.Attach(this);
+        //_observee.Attach(this);
     }
 
     // Update is called once per frame

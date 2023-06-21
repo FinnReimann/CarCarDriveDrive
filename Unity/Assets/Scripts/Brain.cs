@@ -16,6 +16,8 @@ public class Brain : ObserveeMonoBehaviour, Observer
     [Header("Debug Variables")] 
     [SerializeField] private bool useDebugTarget = false;
     [SerializeField] private bool useDebugTacho = false;
+    [SerializeField] private bool useDebugPressur = false;
+    [SerializeField] private bool showDebugLog = false;
     [SerializeField] private float debug_currentSpeed = 0f;
     [SerializeField] private float debug_targetSpeed = 100f;
     [SerializeField] private float debug_currentPressur = 0f;
@@ -28,11 +30,13 @@ public class Brain : ObserveeMonoBehaviour, Observer
     void OnEnable()
     {
         GetComponentInChildren<Tacho>().Attach(this);
+        GetComponentInChildren<Tommy>().Attach(this);
     }
     
     void OnDisable()
     {
         GetComponentInChildren<Tacho>().Detach(this);
+        GetComponentInChildren<Tommy>().Detach(this);
     }
 
     // Update is called once per frame
@@ -41,12 +45,17 @@ public class Brain : ObserveeMonoBehaviour, Observer
         if (useDebugTarget)
         {
             _targetSpeed = debug_targetSpeed;
-            _currentPressur = debug_currentPressur;
         }
         if (useDebugTacho)
         {
             _currentSpeed = debug_currentSpeed;
         }
+        if (useDebugPressur)
+        {
+            _currentPressur = debug_currentPressur;
+        }
+        
+        
         NotifyObservers(calculateDriveControll());
     }
 
@@ -54,13 +63,18 @@ public class Brain : ObserveeMonoBehaviour, Observer
     {
         if (e is SpeedChangeEvent speedChangeEvent)
         {
-            Debug.Log("Get new Speed from Tacho");
-            _currentSpeed = speedChangeEvent.CurrentSpeed;
+            if (showDebugLog)
+                Debug.Log("Get new Speed from Tacho");
+            if (!useDebugTacho)
+                _currentSpeed = speedChangeEvent.CurrentSpeed;
         }
         
         if (e is PressureChangeEvent pressureChangeEvent)
         {
-            _currentPressur = pressureChangeEvent.CurrentPressure;
+            if (!useDebugPressur)
+                _currentPressur = pressureChangeEvent.CurrentPressure * 30; // TODO delete * 30
+            if (showDebugLog)
+                Debug.Log("Get new Pressure from Tommy: " + _currentPressur);
         }
 
         if (e is NavigationEvent navigationEvent)
@@ -79,20 +93,18 @@ public class Brain : ObserveeMonoBehaviour, Observer
         if (speedRatio < 1)
         {   // Accelerate
             acceleration = Mathf.Clamp01(CalcCurve(speedRatio, startingBehabior, accelerationResponse));
-            if (useDebugTarget || useDebugTacho)
+            if (showDebugLog)
                 Debug.Log("Speed Ratio: " + _currentSpeed / _targetSpeed + " acceleration: " + acceleration);
             
         }
         else if (speedRatio > 1)
         {   // Break
             breaking = 1f-Mathf.Clamp01(CalcCurve(speedRatio - 1f, 1f, breakingResponse));
-            if (useDebugTarget || useDebugTacho)
+            if (showDebugLog)
                 Debug.Log("Speed Ratio: " + _currentSpeed / _targetSpeed + " breaking: " + breaking);
         }
 
         steering = _currentPressur;
-        
-        
         
         DriveControllEvent e = new DriveControllEvent
         {
