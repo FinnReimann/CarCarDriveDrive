@@ -32,16 +32,16 @@ public class Driver : MonoBehaviour, Observer
     private void Awake()
     {
         car = GameObject.FindGameObjectWithTag("Vehicle");
-        //_observee = car.GetComponent<TestObservee>();
-        brainToWatch = car.GetComponentInChildren<Brain>();
+        _observee = car.GetComponent<TestObservee>();
+        //brainToWatch = car.GetComponentInChildren<Brain>();
     }
 
     // Start is called before the first frame update
     void Start()
     {
         //Nachrichten vom Brain abonnieren
-        brainToWatch.Attach(this);
-        //_observee.Attach(this);
+        //brainToWatch.Attach(this);
+        _observee.Attach(this);
     }
 
     // Update is called once per frame
@@ -60,41 +60,54 @@ public class Driver : MonoBehaviour, Observer
         //Without rigidbody & with stirring
         //*****************
         //steering
-        if(steeringSpeed != 0)
-            car.transform.Rotate(Vector3.up, maxSteeringAngle * steeringSpeed * Time.deltaTime);
+        if(steeringSpeed != 0 && velocity != 0)
+            car.transform.Rotate(Vector3.up, maxSteeringAngle * steeringSpeed * Time.fixedDeltaTime *velocity/_MaxVelocity);
+        //*(1-(velocity/_MaxVelocity)/2) -> dont steer max possible if speed is max.
 
         //acceleration
         if (accSpeed != 0)
+        {
             acceleration += accSpeed;
-        
-        if (acceleration > _MaxAcc)
-            acceleration = _MaxAcc;
-        else if (acceleration < _MinAcc)
-            acceleration = _MinAcc;
 
-        velocity += acceleration;
-        
-       
+            if (acceleration > _MaxAcc)
+                acceleration = _MaxAcc;
+            else if (acceleration < _MinAcc)
+                acceleration = _MinAcc;
+
+            velocity += acceleration;
+        }
+
+
         //braking
         if (brakeSpeed != 0)
+        {
             braking += brakeSpeed;
-        
-        if (braking > _MaxBrake)
-            braking = _MaxBrake;
-        else if (braking < _MinBrake)
-            braking = _MinBrake;
-        
-        velocity -= braking;
 
-        
+            if (braking > _MaxBrake)
+                braking = _MaxBrake;
+            else if (braking < _MinBrake)
+                braking = _MinBrake;
+
+            if (velocity > 0)
+            {
+                velocity -= braking;
+            }
+            else
+            {
+                velocity = 0;
+            }
+            
+        }
+
+
         //Testing velocity control
         if (velocity > _MaxVelocity)
             velocity = _MaxVelocity;
         else if (velocity < -_MaxVelocity)
             velocity = -_MaxVelocity;
 
-        car.transform.Translate(Vector3.forward * velocity * Time.deltaTime);
-        //Debug.Log("Car Velocity:" + velocity);
+        car.transform.Translate(Vector3.forward * velocity * Time.fixedDeltaTime);
+        Debug.Log("Car Velocity:" + velocity);
         
     }
 

@@ -1062,7 +1062,8 @@ MonoBehaviour:
   accelerationResponse: 0.5
   startingBehabior: 0.75
   breakingResponse: 0.5
-  useDebugVariables: 0
+  useDebugTarget: 0
+  useDebugTacho: 0
   debug_currentSpeed: 0
   debug_targetSpeed: 100
   debug_currentPressur: 0
@@ -1084,7 +1085,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   changeValues: 0
-  acceleration: 1
+  acceleration: 0
   breaking: 0
   steering: 1
 --- !u!1001 &1649707287
