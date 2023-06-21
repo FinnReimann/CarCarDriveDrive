@@ -2,21 +2,17 @@ using UnityEngine;
 
 public class Tommy : ObserveeMonoBehaviour
 {
+    [Header("Debug")]
+    public bool tommysKäfer;
+    
     private Vector3[] _angles;
     private Ray _ray;
-    private float _currentPressure;
-    
+
     private Configuration _configuration;
 
     private void Awake()
     {
         _configuration = GetComponent<Configuration>();
-    }
-
-    private void Update()
-    {
-        //SendRays();
-        CalculateCurrentPressure();
     }
 
     private void CalculateAngle(float direction)
@@ -27,10 +23,10 @@ public class Tommy : ObserveeMonoBehaviour
         
         // Rotationswinkel um die X-Achse
         float rotationX = _configuration.DetectionAngle;
-        transform.rotation = Quaternion.Euler(rotationX, 0f, 0f);
+        transform.rotation = transform.parent.rotation * Quaternion.Euler(-rotationX, 0f, 0f);
 
         // Vorzeichen für die Drehrichtung um die Z-Achse => direction
-        Vector3 forwardDirection = transform.forward;
+        Vector3 downDirection = -transform.up;
 
         // Ray Winkelteilung berechnen
         float rayAngleTotal = _configuration.MaxAngle - _configuration.MinAngle;
@@ -46,7 +42,7 @@ public class Tommy : ObserveeMonoBehaviour
             //_angles[i] = Quaternion.Euler(-(rotationX + (i * 1)), rotationY, rotationZ * direction) * forwardDirection;
             //new Vector3(rotationX + (i*1), 0f, rotationZ * direction)
             // Quaternion.Euler(rotationX + (i*1),0f,0f)
-            _angles[i] = Quaternion.Euler(0f, rayAngle * direction, 0f) * forwardDirection;
+            _angles[i] = Quaternion.Euler(0f, rayAngle * direction, 0f) * downDirection;
         }
     }
 
@@ -66,7 +62,7 @@ public class Tommy : ObserveeMonoBehaviour
         {
             // Get Ray Direction
             Vector3 rayDirection = _angles[i];
-            Debug.Log("Tommy: Richtungswinkel: " + rayDirection);
+            if(tommysKäfer) Debug.Log("Tommys Richtungswinkel: " + rayDirection);
 
             // Create Ray
             _ray = new Ray(currentPosition, rayDirection);
@@ -75,14 +71,14 @@ public class Tommy : ObserveeMonoBehaviour
             if (Physics.Raycast(_ray, out hit, rayLength, _configuration.LayerMask))
             {
                 // Draw Ray
-                Debug.DrawLine(_ray.origin, hit.point, Color.green);
+                if(tommysKäfer) Debug.DrawLine(_ray.origin, hit.point, Color.green);
                 
                 rayHits[i] = true;
             }
             else
             {
                 // Draw Ray
-                Debug.DrawLine(_ray.origin, _ray.origin + _ray.direction * 10f, Color.black);
+                if(tommysKäfer) Debug.DrawLine(_ray.origin, _ray.origin + _ray.direction * 10f, Color.black);
                 
                 rayHits[i] = false;
             }
@@ -118,7 +114,7 @@ public class Tommy : ObserveeMonoBehaviour
         float pressure = 1f - (sum / totalWeight);
         pressure = Mathf.Clamp01(pressure);
 
-        Debug.Log("Tommy: " + pressure);
+        if(tommysKäfer) Debug.Log("Tommys Pressure: " + pressure);
         return pressure;
     }
 
@@ -146,11 +142,16 @@ public class Tommy : ObserveeMonoBehaviour
 
     
     // Update Event raussenden statt dem kram todo
-    private void CalculateCurrentPressure()
+    private float CalculateCurrentPressure()
     {
-        _currentPressure = CalculateSidedPressure(-1) - CalculateSidedPressure(1);
+        float currentPressure = CalculateSidedPressure(-1) - CalculateSidedPressure(1);
         //Debug.Log("CurrentPressure: " + _currentPressure);
+        return currentPressure;
     }
 
-    public float CurrentPressure => _currentPressure;
+    private void FixedUpdate()
+    {
+        PressureChangeEvent pressureChangeEvent = new PressureChangeEvent(CalculateCurrentPressure());
+        NotifyObservers(pressureChangeEvent);
+    }
 }
