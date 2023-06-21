@@ -61,7 +61,7 @@ public class Driver : MonoBehaviour, Observer
         //*****************
         //steering
         if(steeringSpeed != 0 && velocity != 0)
-            car.transform.Rotate(Vector3.up, maxSteeringAngle * steeringSpeed * Time.deltaTime);
+            car.transform.Rotate(Vector3.up, maxSteeringAngle * steeringSpeed * Time.fixedDeltaTime *velocity/_MaxVelocity);
         //*(1-(velocity/_MaxVelocity)/2) -> dont steer max possible if speed is max.
 
         //acceleration
@@ -106,7 +106,7 @@ public class Driver : MonoBehaviour, Observer
         else if (velocity < -_MaxVelocity)
             velocity = -_MaxVelocity;
 
-        car.transform.Translate(Vector3.forward * velocity * Time.deltaTime);
+        car.transform.Translate(Vector3.forward * velocity * Time.fixedDeltaTime);
         Debug.Log("Car Velocity:" + velocity);
         
     }
