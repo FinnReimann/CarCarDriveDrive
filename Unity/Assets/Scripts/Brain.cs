@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Brain : ObserveeMonoBehaviour, Observer
@@ -13,43 +14,47 @@ public class Brain : ObserveeMonoBehaviour, Observer
     private float breakingResponse = 0.5f;
 
     [Header("Debug Variables")] 
-    [SerializeField] private bool useDebugVariables = false;
+    [SerializeField] private bool useDebugTarget = false;
+    [SerializeField] private bool useDebugTacho = false;
     [SerializeField] private float debug_currentSpeed = 0f;
     [SerializeField] private float debug_targetSpeed = 100f;
     [SerializeField] private float debug_currentPressur = 0f;
     
-
     private float _currentSpeed;
     private float _currentPressur;
     private float _targetSpeed;
-    
+
     // Start is called before the first frame update
-    void Start()
+    void OnEnable()
     {
-        // Get Conifg from Config Script
-        // TODO
+        GetComponentInChildren<Tacho>().Attach(this);
+    }
+    
+    void OnDisable()
+    {
+        GetComponentInChildren<Tacho>().Detach(this);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (useDebugVariables)
+        if (useDebugTarget)
         {
-            _currentSpeed = debug_currentSpeed;
             _targetSpeed = debug_targetSpeed;
             _currentPressur = debug_currentPressur;
         }
-        
-        
-        calculateDriveControll();
+        if (useDebugTacho)
+        {
+            _currentSpeed = debug_currentSpeed;
+        }
+        NotifyObservers(calculateDriveControll());
     }
-    
-    
 
     public void CCDDUpdate(CCDDEvents e)
     {
         if (e is SpeedChangeEvent speedChangeEvent)
         {
+            Debug.Log("Get new Speed from Tacho");
             _currentSpeed = speedChangeEvent.CurrentSpeed;
         }
         
@@ -62,10 +67,9 @@ public class Brain : ObserveeMonoBehaviour, Observer
         {
             
         }
-        
     }
 
-    private void calculateDriveControll()
+    private DriveControllEvent calculateDriveControll()
     {
         // Acceleration and braking
         float acceleration = 0f;
@@ -75,14 +79,14 @@ public class Brain : ObserveeMonoBehaviour, Observer
         if (speedRatio < 1)
         {   // Accelerate
             acceleration = Mathf.Clamp01(CalcCurve(speedRatio, startingBehabior, accelerationResponse));
-            if (useDebugVariables)
+            if (useDebugTarget || useDebugTacho)
                 Debug.Log("Speed Ratio: " + _currentSpeed / _targetSpeed + " acceleration: " + acceleration);
             
         }
         else if (speedRatio > 1)
         {   // Break
             breaking = 1f-Mathf.Clamp01(CalcCurve(speedRatio - 1f, 1f, breakingResponse));
-            if (useDebugVariables)
+            if (useDebugTarget || useDebugTacho)
                 Debug.Log("Speed Ratio: " + _currentSpeed / _targetSpeed + " breaking: " + breaking);
         }
 
@@ -96,7 +100,8 @@ public class Brain : ObserveeMonoBehaviour, Observer
             Break = breaking,
             Steer = steering
         };
-        NotifyObservers(e);
+
+        return e;
     }
 
     // curveBehavior should be beetween 0 and 1. So 0.5 is linear from Startingpoint to 0.
