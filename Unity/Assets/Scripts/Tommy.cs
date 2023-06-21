@@ -22,8 +22,7 @@ public class Tommy : ObserveeMonoBehaviour
         _angles = new Vector3[rayCount];
         
         // Rotationswinkel um die X-Achse
-        float rotationX = _configuration.DetectionAngle;
-        transform.rotation = transform.parent.rotation * Quaternion.Euler(-rotationX, 0f, 0f);
+        float rotationX = -_configuration.DetectionAngle;
 
         // Vorzeichen für die Drehrichtung um die Z-Achse => direction
         Vector3 downDirection = -transform.up;
@@ -36,13 +35,14 @@ public class Tommy : ObserveeMonoBehaviour
         for (int i = 0; i < rayCount; i++)
         {
             // Raywinkel berechnen
-            float rayAngle = i * rayAnglePartial + _configuration.MinAngle;
+            float rotationZ = i * rayAnglePartial + _configuration.MinAngle;
             
             // Winkel als Quaternion
             //_angles[i] = Quaternion.Euler(-(rotationX + (i * 1)), rotationY, rotationZ * direction) * forwardDirection;
             //new Vector3(rotationX + (i*1), 0f, rotationZ * direction)
             // Quaternion.Euler(rotationX + (i*1),0f,0f)
-            _angles[i] = Quaternion.Euler(0f, rayAngle * direction, 0f) * downDirection;
+            //_angles[i] = Quaternion.Euler(0f, rayAngle * direction, 0f) * downDirection;
+            _angles[i] = new Vector3(rotationX, 0f, rotationZ * direction);
         }
     }
 
@@ -63,9 +63,20 @@ public class Tommy : ObserveeMonoBehaviour
             // Get Ray Direction
             Vector3 rayDirection = _angles[i];
             if(tommysKäfer) Debug.Log("Tommys Richtungswinkel: " + rayDirection);
+            
+            // Create GameObjects
+            GameObject tempRayCaster = new GameObject("RayCasterObject");
+            // Set Parent
+            tempRayCaster.transform.SetParent(transform);
+            // Set Position of Object
+            tempRayCaster.transform.position = currentPosition;
+            // Rotate GameObject
+            tempRayCaster.transform.localRotation = Quaternion.Euler(_angles[i]);
 
             // Create Ray
-            _ray = new Ray(currentPosition, rayDirection);
+            _ray = new Ray(currentPosition, -tempRayCaster.transform.up);
+            
+            Destroy(tempRayCaster);
 
             // Send Ray
             if (Physics.Raycast(_ray, out hit, rayLength, _configuration.LayerMask))
