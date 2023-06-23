@@ -621,12 +621,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 66221745b215bd84787baedd3e23798e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _MaxAcc: 1
-  _MinAcc: -1
-  _MaxBrake: 1
-  _MinBrake: -1
+  _MaxAcc: 0.5
+  _MinAcc: 0
+  _MaxBrake: 0.5
   maxSteeringAngle: 60
-  _MaxVelocity: 5
+  _MaxVelocity: 50
 --- !u!1 &614817983
 GameObject:
   m_ObjectHideFlags: 0
@@ -703,8 +702,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 614817983}
-  m_LocalRotation: {x: -0.16503261, y: 0.51617205, z: -0.102114946, w: -0.83420813}
-  m_LocalPosition: {x: 18.610332, y: 7.785135, z: 3.855894}
+  m_LocalRotation: {x: -0.1126494, y: 0.4440498, z: -0.056387708, w: -0.8871022}
+  m_LocalPosition: {x: 49.041115, y: 7.6730213, z: -5.7971506}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1022,6 +1021,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15930336e5d4b0b40a5428bae4d6be94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  "tommysK\xE4ferLines": 0
+  "tommysK\xE4ferLogs": 0
 --- !u!114 &1503250873
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1064,6 +1065,8 @@ MonoBehaviour:
   breakingResponse: 0.5
   useDebugTarget: 0
   useDebugTacho: 0
+  useDebugPressur: 0
+  showDebugLog: 0
   debug_currentSpeed: 0
   debug_targetSpeed: 100
   debug_currentPressur: 0

@@ -16,9 +16,8 @@ public class Driver : MonoBehaviour, Observer
     private float brakeSpeed;
     private float velocity;
     [SerializeField]private float _MaxAcc = 1.0f;
-    [SerializeField]private float _MinAcc = -1.0f;
+    [SerializeField]private float _MinAcc = 0; //needed when implementing driving backwards
     [SerializeField]private float _MaxBrake = 1.0f;
-    [SerializeField]private float _MinBrake = -1.0f;
     [SerializeField]private float maxSteeringAngle = 60.0f;
 
     //Steering
@@ -32,7 +31,7 @@ public class Driver : MonoBehaviour, Observer
     private void Awake()
     {
         car = GameObject.FindGameObjectWithTag("Vehicle");
-        //_observee = car.GetComponent<TestObservee>();
+        _observee = car.GetComponent<TestObservee>();
         brainToWatch = car.GetComponentInChildren<Brain>();
     }
 
@@ -85,8 +84,6 @@ public class Driver : MonoBehaviour, Observer
 
             if (braking > _MaxBrake)
                 braking = _MaxBrake;
-            else if (braking < _MinBrake)
-                braking = _MinBrake;
 
             if (velocity > 0)
             {
@@ -119,7 +116,6 @@ public class Driver : MonoBehaviour, Observer
             accSpeed = driveChange.Accelerate;
             brakeSpeed = driveChange.Break;
             steeringSpeed = driveChange.Steer;
-            //wird 2 mal aufgerufen??
             Debug.Log("Driver: Got new Acceleration and Steering! Yay!" );
         }
     }
