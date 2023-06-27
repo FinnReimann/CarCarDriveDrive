@@ -5,7 +5,7 @@ using UnityEngine.TestTools;
 
 public class Tacho : ObserveeMonoBehaviour
 {
-    private const int QueueSize = 10;
+    private const int QueueSize = 2;
     private Queue<float> _lastValues;
     private Vector3 _lastPosition;
     [Header("Debug Variables")] 

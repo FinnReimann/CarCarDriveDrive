@@ -4,6 +4,7 @@ using UnityEngine;
 public class CheckPointTest : MonoBehaviour
 {
     [SerializeField] private bool showDebug;
+    [SerializeField] public int CheckPointNumber;
     [SerializeField] private String CheckPointName;
     [SerializeField] private String targetName = "car";
     private bool wasHit;

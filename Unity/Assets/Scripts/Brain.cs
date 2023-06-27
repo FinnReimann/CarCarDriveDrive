@@ -23,7 +23,7 @@ public class Brain : ObserveeMonoBehaviour, Observer
     [SerializeField] private float debug_currentPressur = 0f;
     
     private float _currentSpeed;
-    private float _currentPressur;
+    private float _currentPressure;
     private float _targetSpeed;
 
     // Start is called before the first frame update
@@ -54,7 +54,7 @@ public class Brain : ObserveeMonoBehaviour, Observer
         }
         if (useDebugPressur)
         {
-            _currentPressur = debug_currentPressur;
+            _currentPressure = debug_currentPressur;
         }
         
         NotifyObservers(calculateDriveControll());
@@ -67,15 +67,15 @@ public class Brain : ObserveeMonoBehaviour, Observer
             if (showDebugLog)
                 Debug.Log("Get new Speed from Tacho");
             if (!useDebugTacho)
-                _currentSpeed = speedChangeEvent.CurrentSpeed;
+                _currentSpeed = speedChangeEvent.RecentAverageSpeed;
         }
         
         if (e is PressureChangeEvent pressureChangeEvent)
         {
             if (!useDebugPressur)
-                _currentPressur = pressureChangeEvent.CurrentPressure;
+                _currentPressure = pressureChangeEvent.CurrentPressure;
             if (showDebugLog)
-                Debug.Log("Get new Pressure from Tommy: " + _currentPressur);
+                Debug.Log("Get new Pressure from Tommy: " + _currentPressure);
         }
 
         if (e is NavigationEvent navigationEvent)
@@ -106,7 +106,7 @@ public class Brain : ObserveeMonoBehaviour, Observer
                 Debug.Log("Speed Ratio: " + _currentSpeed / _targetSpeed + " breaking: " + breaking);
         }
 
-        steering = _currentPressur * 50;
+        steering = _currentPressure;
 
         DriveControllEvent e = new DriveControllEvent(acceleration, breaking, steering);
 

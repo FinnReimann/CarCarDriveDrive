@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class DriveControllEvent : CCDDEvents
 {
-    public DriveControllEvent(float accelerate, float @break, float steer)
+    public DriveControllEvent(float accelerate, float brake, float steer)
     {
         Accelerate = accelerate;
-        Break = @break;
+        Brake = brake;
         Steer = steer;
     }
 
 
     public float Accelerate {set; get; }
-    public float Break {set; get; }
+    public float Brake {set; get; }
     public float Steer {set; get; }
 }

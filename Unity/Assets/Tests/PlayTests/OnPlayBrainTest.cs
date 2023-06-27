@@ -41,7 +41,7 @@ public class OnPlayBrainTest
                 {
                     Assert.Greater(driveControllEvent.Accelerate, 0);
                     Assert.LessOrEqual(driveControllEvent.Accelerate, 1);
-                    Assert.AreEqual(driveControllEvent.Break, 0);
+                    Assert.AreEqual(driveControllEvent.Brake, 0);
                 }
             }
         }
@@ -73,7 +73,7 @@ public class OnPlayBrainTest
                 {
                     Assert.Greater(driveControllEvent.Accelerate, 0);
                     Assert.LessOrEqual(driveControllEvent.Accelerate, 1);
-                    Assert.AreEqual(driveControllEvent.Break, 0);
+                    Assert.AreEqual(driveControllEvent.Brake, 0);
                 }
             }
         }
@@ -104,8 +104,8 @@ public class OnPlayBrainTest
                 if(events is DriveControllEvent driveControllEvent)
                 {
                     Assert.AreEqual(driveControllEvent.Accelerate, 0);
-                    Assert.Greater(driveControllEvent.Break, 0);
-                    Assert.LessOrEqual(driveControllEvent.Break, 1);
+                    Assert.Greater(driveControllEvent.Brake, 0);
+                    Assert.LessOrEqual(driveControllEvent.Brake, 1);
                 }
             }
         }
@@ -136,8 +136,8 @@ public class OnPlayBrainTest
                 if(events is DriveControllEvent driveControllEvent)
                 {
                     Assert.AreEqual(driveControllEvent.Accelerate, 0);
-                    Assert.Greater(driveControllEvent.Break, 0);
-                    Assert.LessOrEqual(driveControllEvent.Break, 1);
+                    Assert.Greater(driveControllEvent.Brake, 0);
+                    Assert.LessOrEqual(driveControllEvent.Brake, 1);
                 }
             }
         }
@@ -168,7 +168,7 @@ public class OnPlayBrainTest
                 if(events is DriveControllEvent driveControllEvent)
                 {
                     Assert.AreEqual(driveControllEvent.Accelerate, 0);
-                    Assert.AreEqual(driveControllEvent.Break, 0);
+                    Assert.AreEqual(driveControllEvent.Brake, 0);
                 }
             }
         }
