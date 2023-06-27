@@ -11,17 +11,17 @@ public class Configuration : MonoBehaviour
     // Ray-Einstellungen
     [Header("Ray Settings")]
     [SerializeField][Tooltip("Amount of rays")]
-    private int rayCount;
+    private int rayCount = 8;
     [SerializeField][Range(1f, 5f)][Tooltip("Amount of pressure calculated from 1 = Linear, to 2 = exponential falling.")]
-    private int calculationCurve;
+    private float calculationCurve = 3f;
     [SerializeField][Range(0f, 90f)][Tooltip("Angle of the innermost ray.")]
-    private float minAngle;
+    private float minAngle = 10f;
     [SerializeField][Range(0f, 90f)][Tooltip("Angle of the outermost ray.")]
-    private float maxAngle;
+    private float maxAngle = 45f;
     [SerializeField][Range(1f, 100f)][Tooltip("Maximal length of the rays.")]
-    private float maxRayLength;
+    private float maxRayLength = 8f;
     [SerializeField][Range(0f, 90f)][Tooltip("Angle that describes how far the Rays will look to the front.")]
-    private float detectionAngle;
+    private float detectionAngle = 0f;
 
 // Geschwindigkeit und Steuerungsverhalten
     [SerializeField]
@@ -48,7 +48,7 @@ public class Configuration : MonoBehaviour
         set => rayCount = value;
     }
     
-    public int CalculationCurve
+    public float CalculationCurve
     {
         get => calculationCurve;
         set => calculationCurve = value;
