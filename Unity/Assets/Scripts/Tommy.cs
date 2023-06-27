@@ -4,7 +4,8 @@ public class Tommy : ObserveeMonoBehaviour
 {
     [Header("Debug")]
     public bool tommysKaeferLines;
-    public bool tommysKaeferLogs;
+    public bool tommysKaeferAngleLogs;
+    public bool tommysKaeferPressureLogs;
     
     private Vector3[] _angles;
     private Ray _ray;
@@ -64,7 +65,7 @@ public class Tommy : ObserveeMonoBehaviour
         {
             // Get Ray Direction
             Vector3 rayDirection = _angles[i];
-            if(tommysKaeferLogs) Debug.Log("Tommys Richtungswinkel: " + rayDirection);
+            if(tommysKaeferAngleLogs) Debug.Log("Tommys Richtungswinkel: " + rayDirection);
             
             // Create GameObjects
             GameObject tempRayCaster = new GameObject("RayCasterObject");
@@ -107,15 +108,15 @@ public class Tommy : ObserveeMonoBehaviour
         bool[] rayHits = SendRays(direction);
         
         // Get Ray Hits Length
-        int rayHitsLength = rayHits.Length;
+        int rayCount = _configuration.RayCount;
 
         // Initialize variables for calculating pressure
         float pressure = 0f;
 
         // Iterate through the ray hits
-        for (int i = 0; i < rayHitsLength; i++)
+        for (int i = 0; i < rayCount; i++)
         {
-            float ratio = i / _configuration.RayCount;
+            float ratio = i / (float)rayCount;
 
             // Weight calculation
             float weight = Mathf.Exp(-ratio * _configuration.CalculationCurve);
@@ -128,10 +129,10 @@ public class Tommy : ObserveeMonoBehaviour
         }
 
         // Clamp the pressure between 0 and 1
-        pressure = Mathf.Clamp01(pressure);
+        // pressure = Mathf.Clamp01(pressure);
 
         // Log the pressure value if tommy's Kaefer logs are enabled
-        if (tommysKaeferLogs) Debug.Log("Tommys Pressure: " + pressure);
+        if (tommysKaeferPressureLogs) Debug.Log("Tommys Pressure: " + pressure);
 
         // Return the calculated pressure
         return pressure;
@@ -140,7 +141,7 @@ public class Tommy : ObserveeMonoBehaviour
     private float CalculateCurrentPressure()
     {
         float currentPressure = CalculateSidedPressure(-1) - CalculateSidedPressure(1);
-        if(tommysKaeferLogs) Debug.Log("Tommys CurrentPressure: " + currentPressure);
+        if(tommysKaeferPressureLogs) Debug.Log("Tommys CurrentPressure: " + currentPressure);
         return currentPressure;
     }
 
