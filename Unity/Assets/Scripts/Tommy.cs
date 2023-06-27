@@ -22,28 +22,16 @@ public class Tommy : ObserveeMonoBehaviour
         // Initialiesierung des Winkel Arrays
         int rayCount = _configuration.RayCount;
         _angles = new Vector3[rayCount];
-        
         // Rotationswinkel um die X-Achse
         float rotationX = -_configuration.DetectionAngle;
-
         // Ray Winkelteilung berechnen
         float rayAngleTotal = _configuration.MaxAngle - _configuration.MinAngle;
-        float rayAnglePartial;
-        if (rayCount > 1)
-        {
-            rayAnglePartial = rayAngleTotal / (rayCount - 1);
-        }
-        else
-        {
-            rayAnglePartial = rayAngleTotal;
-        }
-
+        float rayAnglePartial = rayCount > 1 ? (rayAngleTotal / (rayCount - 1)) : rayAngleTotal;
         // Rotationswinkel um die Z-Achse
         for (int i = 0; i < rayCount; i++)
         {
             // Raywinkel berechnen
             float rotationZ = i * rayAnglePartial + _configuration.MinAngle;
-            
             // Winkel als Quaternion
             _angles[i] = new Vector3(rotationX, 0f, rotationZ * direction);
         }
@@ -56,43 +44,42 @@ public class Tommy : ObserveeMonoBehaviour
         float rayLength = _configuration.MaxRayLength;
         int rayCount = _configuration.RayCount;
         bool[] rayHits = new bool[rayCount];
-        RaycastHit hit;
-        
+
         Vector3 currentPosition = transform.position;
 
         // Create and Send Rays
         for (int i = 0; i < rayCount; i++)
         {
-            // Get Ray Direction
+            // Get ray direction
             Vector3 rayDirection = _angles[i];
-            if(tommysKaeferAngleLogs) Debug.Log("Tommys Richtungswinkel: " + rayDirection);
-            
-            // Create GameObjects
+            // Create GameObject
             GameObject tempRayCaster = new GameObject("RayCasterObject");
-            // Set Parent
+            // Set parent of GameObject
             tempRayCaster.transform.SetParent(transform);
-            // Set Position of Object
+            // Set position of object
             tempRayCaster.transform.position = currentPosition;
             // Rotate GameObject
-            tempRayCaster.transform.localRotation = Quaternion.Euler(_angles[i]);
-
+            tempRayCaster.transform.localRotation = Quaternion.Euler(rayDirection);
             // Create Ray
             _ray = new Ray(currentPosition, -tempRayCaster.transform.up);
-            
+            // Destroy temporary GameObject
             Destroy(tempRayCaster);
 
+            if(tommysKaeferAngleLogs) Debug.Log("Tommys Richtungswinkel: " + rayDirection);
+
             // Send Ray
-            if (Physics.Raycast(_ray, out hit, rayLength, _configuration.LayerMask))
+            if (Physics.Raycast(_ray, out RaycastHit hit, rayLength, _configuration.LayerMask))
             {
                 // Draw Ray
                 if(tommysKaeferLines) Debug.DrawLine(_ray.origin, hit.point, Color.green);
-                
+                // Set hit to true
                 rayHits[i] = true;
             }
             else
             {
                 // Draw Ray
                 if(tommysKaeferLines) Debug.DrawLine(_ray.origin, _ray.origin + _ray.direction * rayLength, Color.black);
+                // Set hit to false
                 rayHits[i] = false;
             }
         }
@@ -112,20 +99,15 @@ public class Tommy : ObserveeMonoBehaviour
 
         // Initialize variables for calculating pressure
         float pressure = 0f;
-
         // Iterate through the ray hits
         for (int i = 0; i < rayCount; i++)
         {
+            // Get ratio of ray position
             float ratio = i / (float)rayCount;
-
             // Weight calculation
             float weight = Mathf.Exp(-ratio * _configuration.CalculationCurve);
-
             // Accumulate the total weight
-            if (rayHits[i] && weight > pressure)
-            {
-                pressure = weight;
-            }
+            if (rayHits[i] && weight > pressure) pressure = weight;
         }
 
         // Clamp the pressure between 0 and 1
