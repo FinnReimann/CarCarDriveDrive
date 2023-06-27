@@ -1,88 +1,75 @@
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class SidePressureCalculator : ObserveeMonoBehaviour
 {
     [Header("Debug")]
     public bool tommysKaeferLines;
-    public bool tommysKaeferAngleLogs;
     public bool tommysKaeferPressureLogs;
     
     private Vector3[] _angles;
     private Ray _ray;
-
     private Configuration _configuration;
+    private List<GameObject> _leftRayCasterObjects;
+    private List<GameObject> _rightRayCasterObjects;
 
     private void Awake() => _configuration = GetComponentInChildren<Configuration>();
 
-    
-    
-    private void CalculateAngle(float direction)
+    private void OnEnable()
     {
-        // Initialiesierung des Winkel Arrays
-        int rayCount = _configuration.RayCount;
-        _angles = new Vector3[rayCount];
-        // Rotationswinkel um die X-Achse
-        float rotationX = -_configuration.DetectionAngle;
-        // Ray Winkelteilung berechnen
-        float rayAngleTotal = _configuration.MaxAngle - _configuration.MinAngle;
-        float rayAnglePartial = rayCount > 1 ? (rayAngleTotal / (rayCount - 1)) : rayAngleTotal;
-        // Rotationswinkel um die Z-Achse
-        for (int i = 0; i < rayCount; i++)
+        // Create GameObject Lists
+        _leftRayCasterObjects = new List<GameObject>();
+        _rightRayCasterObjects = new List<GameObject>();
+        
+        // Create GameObject
+        GameObject tempRayCaster = new GameObject("RayCasterObject");
+        // Set position of object
+        tempRayCaster.transform.position = transform.position;
+        // Set parent of GameObject
+        tempRayCaster.transform.SetParent(transform);
+        
+        CalculateAngle(-1);
+        for (int i = 0; i < _configuration.RayCount; i++)
         {
-            // Raywinkel berechnen
-            float rotationZ = i * rayAnglePartial + _configuration.MinAngle;
-            // Winkel als Quaternion
-            _angles[i] = new Vector3(rotationX, 0f, rotationZ * direction);
+            GameObject caster = Instantiate(tempRayCaster, transform.position, transform.localRotation, transform);
+            caster.transform.localRotation = Quaternion.Euler(_angles[i]);
+            _leftRayCasterObjects.Add(caster);
+        }
+        CalculateAngle(1);
+        for (int i = 0; i < _configuration.RayCount; i++)
+        {
+            GameObject caster = Instantiate(tempRayCaster, transform.position, transform.localRotation, transform);
+            caster.transform.localRotation = Quaternion.Euler(_angles[i]);
+            _rightRayCasterObjects.Add(caster);
         }
     }
 
-    private bool[] SendRays(float direction)
+    private void OnDisable()
     {
-        CalculateAngle(direction);
-
-        float rayLength = _configuration.MaxRayLength;
-        int rayCount = _configuration.RayCount;
-        bool[] rayHits = new bool[rayCount];
-
-        Vector3 currentPosition = transform.position;
-
-        // Create and Send Rays
-        for (int i = 0; i < rayCount; i++)
+        // Destroy temporary GameObjects
+        foreach (GameObject o in _leftRayCasterObjects)
         {
-            // Get ray direction
-            Vector3 rayDirection = _angles[i];
-            // Create GameObject
-            GameObject tempRayCaster = new GameObject("RayCasterObject");
-            // Set parent of GameObject
-            tempRayCaster.transform.SetParent(transform);
-            // Set position of object
-            tempRayCaster.transform.position = currentPosition;
-            // Rotate GameObject
-            tempRayCaster.transform.localRotation = Quaternion.Euler(rayDirection);
-            // Create Ray
-            _ray = new Ray(currentPosition, -tempRayCaster.transform.up);
-            // Destroy temporary GameObject
-            Destroy(tempRayCaster);
-
-            if(tommysKaeferAngleLogs) Debug.Log("Tommys Richtungswinkel: " + rayDirection);
-
-            // Send Ray
-            if (Physics.Raycast(_ray, out RaycastHit hit, rayLength, _configuration.LayerMask))
-            {
-                // Draw Ray
-                if(tommysKaeferLines) Debug.DrawLine(_ray.origin, hit.point, Color.green);
-                // Set hit to true
-                rayHits[i] = true;
-            }
-            else
-            {
-                // Draw Ray
-                if(tommysKaeferLines) Debug.DrawLine(_ray.origin, _ray.origin + _ray.direction * rayLength, Color.black);
-                // Set hit to false
-                rayHits[i] = false;
-            }
+            Destroy(o);
         }
-        return rayHits;
+        foreach (GameObject o in _leftRayCasterObjects)
+        {
+            Destroy(o);
+        }
+    }
+    
+    private void Update()
+    {
+        // Nicht jedes mal neuen Pressure wenn sich nix ändert todo
+        PressureChangeEvent pressureChangeEvent = new PressureChangeEvent(CalculateCurrentPressure());
+        NotifyObservers(pressureChangeEvent);
+    }
+    
+    private float CalculateCurrentPressure()
+    {
+        float currentPressure = CalculateSidedPressure(-1) - CalculateSidedPressure(1);
+        if(tommysKaeferPressureLogs) Debug.Log("Tommys CurrentPressure: " + currentPressure);
+        return currentPressure;
     }
     
     private float CalculateSidedPressure(float direction)
@@ -118,17 +105,64 @@ public class SidePressureCalculator : ObserveeMonoBehaviour
         // Return the calculated pressure
         return pressure;
     }
-    
-    private float CalculateCurrentPressure()
+
+    private bool[] SendRays(float direction)
     {
-        float currentPressure = CalculateSidedPressure(-1) - CalculateSidedPressure(1);
-        if(tommysKaeferPressureLogs) Debug.Log("Tommys CurrentPressure: " + currentPressure);
-        return currentPressure;
+        List<GameObject> tempRayCasterObjects = direction == -1 ? _leftRayCasterObjects : _rightRayCasterObjects;
+
+        float rayLength = _configuration.MaxRayLength;
+        int rayCount = _configuration.RayCount;
+        bool[] rayHits = new bool[rayCount];
+
+        Vector3 currentPosition = transform.position;
+        int index = 0;
+        bool rayHit = false;
+
+        // Send Rays
+        foreach (GameObject obj in tempRayCasterObjects)
+        {
+            // Create Ray
+            _ray = new Ray(currentPosition, -obj.transform.up);
+
+            // Send Ray
+            if (!rayHit && Physics.Raycast(_ray, out RaycastHit hit, rayLength, _configuration.LayerMask))
+            {
+                // Draw Ray
+                if(tommysKaeferLines) Debug.DrawLine(_ray.origin, hit.point, Color.green);
+                // Set hit to true
+                rayHits[index] = true;
+                rayHit = true;
+            }
+            else
+            {
+                // Draw Ray
+                if(tommysKaeferLines) Debug.DrawLine(_ray.origin, _ray.origin + _ray.direction * rayLength, Color.black);
+                // Set hit to false
+                rayHits[index] = false;
+            }
+
+            index++;
+        }
+        return rayHits;
     }
 
-    private void FixedUpdate()
+    private void CalculateAngle(float direction)
     {
-        PressureChangeEvent pressureChangeEvent = new PressureChangeEvent(CalculateCurrentPressure());
-        NotifyObservers(pressureChangeEvent);
+        // Initialiesierung des Winkel Arrays
+        int rayCount = _configuration.RayCount;
+        _angles = new Vector3[rayCount];
+        // Rotationswinkel um die X-Achse
+        float rotationX = -_configuration.DetectionAngle;
+        // Ray Winkelteilung berechnen
+        float rayAngleTotal = _configuration.MaxAngle - _configuration.MinAngle;
+        float rayAnglePartial = rayCount > 1 ? (rayAngleTotal / (rayCount - 1)) : rayAngleTotal;
+        // Rotationswinkel um die Z-Achse
+        for (int i = 0; i < rayCount; i++)
+        {
+            // Raywinkel berechnen
+            float rotationZ = i * rayAnglePartial + _configuration.MinAngle;
+            // Winkel als Quaternion
+            _angles[i] = new Vector3(rotationX, 0f, rotationZ * direction);
+        }
     }
 }
