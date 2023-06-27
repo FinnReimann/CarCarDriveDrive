@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class TestNavigator : Navigator
@@ -13,7 +14,7 @@ public class TestNavigator : Navigator
     protected override void Update()
     {
         if (showConstantDebug)
-            Debug.Log("The Car is in Round: " + drivenRounds + " and passed to " + enteredCheckpoints + " Checkpoints");
+            Debug.Log("The Car is in Round: " + drivenRounds + " and passed through " + enteredCheckpoints + " Checkpoints. Current Speed is " + lastSpeed);
         
         if (lastSpeed != targetSpeed)
         {
@@ -25,23 +26,23 @@ public class TestNavigator : Navigator
     private void OnEnable()
     {
         gameObject.AddComponent<BoxCollider>();
+        Rigidbody rigidbody = gameObject.AddComponent<Rigidbody>();
+        rigidbody.isKinematic = true;
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.layer != layerIndex) return;
+        CheckPointTest checkpoint = other.GetComponent<CheckPointTest>();
         if(showDebug)
-            Debug.Log("Enter: " + other.name);
-        enteredCheckpoints++;
+            Debug.Log("Enter Checkpoint: " + checkpoint.CheckPointNumber);
+        if(enteredCheckpoints+1 == checkpoint.CheckPointNumber)
+            enteredCheckpoints++;
         if (enteredCheckpoints == CheckpointCount)
         {
             enteredCheckpoints = 0;
             drivenRounds++;
             targetSpeed += speedIncreasingPerRound;
         }
-
-
-
-
     }
 }
