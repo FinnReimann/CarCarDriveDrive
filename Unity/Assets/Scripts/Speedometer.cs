@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.TestTools;
 
-public class Tacho : ObserveeMonoBehaviour
+public class Speedometer : ObserveeMonoBehaviour
 {
     private const int QueueSize = 2;
     private Queue<float> _lastValues;
@@ -15,7 +15,7 @@ public class Tacho : ObserveeMonoBehaviour
     // Start is called before the first frame update
     public void Start()
     {
-        Debug.Log("Tacho meldet sich zum dienst");
+        Debug.Log("Speedometer meldet sich zum dienst");
         _lastValues = new Queue<float>(QueueSize);
         for (int i = 0; i < QueueSize; i++)
         {
@@ -34,7 +34,7 @@ public class Tacho : ObserveeMonoBehaviour
             NotifyObservers(speedChangeEvent);
         _lastSpeedChangeEvent = speedChangeEvent;
         if (debug)
-            Debug.Log("Tacho: CurrentPosition: " + transform.position + " CurrentSpeed: " + speedChangeEvent.CurrentSpeed + " RecentAverageSpeed: " + speedChangeEvent.RecentAverageSpeed);
+            Debug.Log("Speedometer: CurrentPosition: " + transform.position + " CurrentSpeed: " + speedChangeEvent.CurrentSpeed + " RecentAverageSpeed: " + speedChangeEvent.RecentAverageSpeed);
     }
 
     float CalculateSpeed()

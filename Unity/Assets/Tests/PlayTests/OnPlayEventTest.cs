@@ -37,13 +37,13 @@ public class TestPlayTestScript
     public IEnumerator TestSpeedEvent()
     {
         //Arrange
-        Tacho tacho = car.AddComponent<Tacho>();
+        Speedometer speedometer = car.AddComponent<Speedometer>();
         EventTestObserver testObserver = new EventTestObserver();
-        tacho.Attach(testObserver);
+        speedometer.Attach(testObserver);
         
         //Act
         CCDDEvents speedEvent = new SpeedChangeEvent(1f,10f);
-        tacho.NotifyObservers(speedEvent);
+        speedometer.NotifyObservers(speedEvent);
         yield return null;
         
         //Assert
@@ -62,8 +62,8 @@ public class TestPlayTestScript
     public IEnumerator TestDriveEvent()
     {
         //Arrange
-        car.AddComponent<Tacho>();
-        car.AddComponent<Tommy>();
+        car.AddComponent<Speedometer>();
+        car.AddComponent<SidePressureCalculator>();
         Brain brain = car.AddComponent<Brain>();
         EventTestObserver testObserver = new EventTestObserver();
         brain.Attach(testObserver);
@@ -89,13 +89,13 @@ public class TestPlayTestScript
     public IEnumerator TestPressureEvent()
     {
         //Arrange
-        Tommy tommy = car.AddComponent<Tommy>();
+        SidePressureCalculator sidePressureCalculator = car.AddComponent<SidePressureCalculator>();
         EventTestObserver testObserver = new EventTestObserver();
-        tommy.Attach(testObserver);
+        sidePressureCalculator.Attach(testObserver);
         
         //Act
         CCDDEvents pressureEvent = new PressureChangeEvent(1f);
-        tommy.NotifyObservers(pressureEvent);
+        sidePressureCalculator.NotifyObservers(pressureEvent);
         yield return null;
         
         //Assert

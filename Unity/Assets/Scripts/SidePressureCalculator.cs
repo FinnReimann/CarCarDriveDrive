@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Tommy : ObserveeMonoBehaviour
+public class SidePressureCalculator : ObserveeMonoBehaviour
 {
     [Header("Debug")]
     public bool tommysKaeferLines;
@@ -12,11 +12,10 @@ public class Tommy : ObserveeMonoBehaviour
 
     private Configuration _configuration;
 
-    private void Awake()
-    {
-        _configuration = GetComponentInChildren<Configuration>();
-    }
+    private void Awake() => _configuration = GetComponentInChildren<Configuration>();
 
+    
+    
     private void CalculateAngle(float direction)
     {
         // Initialiesierung des Winkel Arrays

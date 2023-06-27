@@ -26,18 +26,20 @@ public class Brain : ObserveeMonoBehaviour, Observer
     private float _currentPressure;
     private float _targetSpeed;
 
-    // Start is called before the first frame update
+    private Configuration _configuration;
+    
+    private void Awake() => _configuration = GetComponentInChildren<Configuration>();
     void OnEnable()
     {
-        GetComponentInChildren<Tacho>().Attach(this);
-        GetComponentInChildren<Tommy>().Attach(this);
+        GetComponentInChildren<Speedometer>().Attach(this);
+        GetComponentInChildren<SidePressureCalculator>().Attach(this);
         GetComponentInChildren<Navigator>().Attach(this);
     }
     
     void OnDisable()
     {
-        GetComponentInChildren<Tacho>().Detach(this);
-        GetComponentInChildren<Tommy>().Detach(this);
+        GetComponentInChildren<Speedometer>().Detach(this);
+        GetComponentInChildren<SidePressureCalculator>().Detach(this);
         GetComponentInChildren<Navigator>().Detach(this);
     }
 
@@ -45,19 +47,13 @@ public class Brain : ObserveeMonoBehaviour, Observer
     void Update()
     {
         if (useDebugTarget)
-        {
             _targetSpeed = debug_targetSpeed;
-        }
         if (useDebugTacho)
-        {
             _currentSpeed = debug_currentSpeed;
-        }
         if (useDebugPressur)
-        {
             _currentPressure = debug_currentPressur;
-        }
         
-        NotifyObservers(calculateDriveControll());
+        NotifyObservers(CalculateDriveControll());
     }
 
     public void CCDDUpdate(CCDDEvents e)
@@ -65,7 +61,7 @@ public class Brain : ObserveeMonoBehaviour, Observer
         if (e is SpeedChangeEvent speedChangeEvent)
         {
             if (showDebugLog)
-                Debug.Log("Get new Speed from Tacho");
+                Debug.Log("Get new Speed from Speedometer");
             if (!useDebugTacho)
                 _currentSpeed = speedChangeEvent.RecentAverageSpeed;
         }
@@ -75,7 +71,7 @@ public class Brain : ObserveeMonoBehaviour, Observer
             if (!useDebugPressur)
                 _currentPressure = pressureChangeEvent.CurrentPressure;
             if (showDebugLog)
-                Debug.Log("Get new Pressure from Tommy: " + _currentPressure);
+                Debug.Log("Get new Pressure from SidePressureCalculator: " + _currentPressure);
         }
 
         if (e is NavigationEvent navigationEvent)
@@ -85,27 +81,29 @@ public class Brain : ObserveeMonoBehaviour, Observer
         }
     }
 
-    private DriveControllEvent calculateDriveControll()
+    private DriveControllEvent CalculateDriveControll()
     {
         // Acceleration and braking
         float acceleration = 0f;
         float breaking = 0f;
         float steering = 0f;
+        
         float speedRatio = _currentSpeed / _targetSpeed;
         if (speedRatio < 1)
         {   // Accelerate
-            acceleration = Mathf.Clamp01(CalcCurve(speedRatio, startingBehabior, accelerationResponse));
+            acceleration = CalcCurve(speedRatio, startingBehabior, accelerationResponse);
             if (showDebugLog)
                 Debug.Log("Speed Ratio: " + _currentSpeed / _targetSpeed + " acceleration: " + acceleration);
             
         }
         else if (speedRatio > 1)
         {   // Break
-            breaking = 1f-Mathf.Clamp01(CalcCurve(speedRatio - 1f, 1f, breakingResponse));
+            breaking = 1f-CalcCurve(speedRatio - 1f, 1f, breakingResponse);
             if (showDebugLog)
                 Debug.Log("Speed Ratio: " + _currentSpeed / _targetSpeed + " breaking: " + breaking);
         }
 
+        // Steering
         steering = _currentPressure;
 
         DriveControllEvent e = new DriveControllEvent(acceleration, breaking, steering);
@@ -133,6 +131,6 @@ public class Brain : ObserveeMonoBehaviour, Observer
         {   // If under 0.5 the curveBehavior Faktor is between -10 and 0
             y = 20f*curveBehavior-10f;
         }
-        return (-(x / (1/startingPoint)) + 1*startingPoint) * Mathf.Exp(x*y);
+        return Mathf.Clamp01(startingPoint * (Mathf.Exp(x * y) - x));
     }
 }

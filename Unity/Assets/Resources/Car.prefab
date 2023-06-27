@@ -305,7 +305,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d29ac6ada87b21e43a6e34cfa173d0ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debug: 1
+  debug: 0
 --- !u!114 &8094774728029561662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -319,8 +319,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tommysKaeferLines: 1
-  tommysKaeferAngleLogs: 1
-  tommysKaeferPressureLogs: 1
+  tommysKaeferAngleLogs: 0
+  tommysKaeferPressureLogs: 0
 --- !u!114 &8094774728557164935
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -336,7 +336,7 @@ MonoBehaviour:
   targetSpeed: 10
   layerIndex: 7
   CheckpointCount: 9
-  showDebug: 1
+  showDebug: 0
   showConstantDebug: 0
   speedIncreasingPerRound: 1
 --- !u!1 &8094774728345781268

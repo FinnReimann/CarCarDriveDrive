@@ -15,8 +15,8 @@ public class OnPlayBrainTest
     {
         car = new GameObject();
         car.AddComponent<Configuration>();
-        car.AddComponent<Tacho>();
-        car.AddComponent<Tommy>();
+        car.AddComponent<Speedometer>();
+        car.AddComponent<SidePressureCalculator>();
         car.AddComponent<Navigator>();
     }
     
