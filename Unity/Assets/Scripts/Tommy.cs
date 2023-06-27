@@ -14,7 +14,7 @@ public class Tommy : ObserveeMonoBehaviour
 
     private void Awake()
     {
-        _configuration = GetComponent<Configuration>();
+        _configuration = GetComponentInChildren<Configuration>();
     }
 
     private void CalculateAngle(float direction)

@@ -115,7 +115,7 @@ public class DriverOldLady : MonoBehaviour, Observer
         if (e is DriveControllEvent driveChange)
         {
             accSpeed = driveChange.Accelerate;
-            brakeSpeed = driveChange.Break;
+            brakeSpeed = driveChange.Brake;
             steeringSpeed = driveChange.Steer;
             if(showDebugLog)
                 Debug.Log("Driver: Got new Acceleration and Steering! Yay!" );
