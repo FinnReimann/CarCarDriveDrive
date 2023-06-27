@@ -17,6 +17,7 @@ public class OnPlayBrainTest
         car.AddComponent<Configuration>();
         car.AddComponent<Tacho>();
         car.AddComponent<Tommy>();
+        car.AddComponent<Navigator>();
     }
     
     [UnityTest]

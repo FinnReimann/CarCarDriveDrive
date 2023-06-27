@@ -30,6 +30,7 @@ public class TestPlayTestScript
     {
         car = new GameObject();
         car.AddComponent<Configuration>();
+        car.AddComponent<Navigator>();
     }
     // A UnityTest behaves like a coroutine in Play Mode
     [UnityTest]
