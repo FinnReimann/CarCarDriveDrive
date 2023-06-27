@@ -31,12 +31,14 @@ public class Brain : ObserveeMonoBehaviour, Observer
     {
         GetComponentInChildren<Tacho>().Attach(this);
         GetComponentInChildren<Tommy>().Attach(this);
+        GetComponentInChildren<Navigator>().Attach(this);
     }
     
     void OnDisable()
     {
         GetComponentInChildren<Tacho>().Detach(this);
         GetComponentInChildren<Tommy>().Detach(this);
+        GetComponentInChildren<Navigator>().Detach(this);
     }
 
     // Update is called once per frame
@@ -72,7 +74,8 @@ public class Brain : ObserveeMonoBehaviour, Observer
         {
             if (!useDebugPressur)
                 _currentPressur = pressureChangeEvent.CurrentPressure;
-            Debug.Log("Get new Pressure from Tommy: " + _currentPressur);
+            if (showDebugLog)
+                Debug.Log("Get new Pressure from Tommy: " + _currentPressur);
         }
 
         if (e is NavigationEvent navigationEvent)
@@ -103,7 +106,7 @@ public class Brain : ObserveeMonoBehaviour, Observer
                 Debug.Log("Speed Ratio: " + _currentSpeed / _targetSpeed + " breaking: " + breaking);
         }
 
-        steering = _currentPressur;
+        steering = _currentPressur * 50;
 
         DriveControllEvent e = new DriveControllEvent(acceleration, breaking, steering);
 
@@ -132,6 +135,4 @@ public class Brain : ObserveeMonoBehaviour, Observer
         }
         return (-(x / (1/startingPoint)) + 1*startingPoint) * Mathf.Exp(x*y);
     }
-    
-    
 }

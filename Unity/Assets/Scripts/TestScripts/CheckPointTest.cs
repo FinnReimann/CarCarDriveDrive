@@ -22,6 +22,5 @@ public class CheckPointTest : MonoBehaviour
                 Debug.Log(CheckPointName + " was hit by " + other.name);
             wasHit = true;
         }
-        
     }
 }

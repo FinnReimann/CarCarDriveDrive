@@ -650,6 +650,29 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &955142906 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4492151064408716718, guid: 873c93b3beb6a41438573344a653a3f4, type: 3}
+  m_PrefabInstance: {fileID: 4492151065338231834}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &955142913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 955142906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17896c20070868746aa7e2c7bc882866, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetSpeed: 3
+  layerIndex: 7
+  CheckpointCount: 9
+  showDebug: 1
+  showConstantDebug: 0
+  speedIncreasingPerRound: 1
 --- !u!1 &1180408470
 GameObject:
   m_ObjectHideFlags: 0
@@ -755,9 +778,85 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 118461103, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 118461106, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: showDebug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 118461106, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: targetName
+      value: Car
+      objectReference: {fileID: 0}
+    - target: {fileID: 509003999, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 509004002, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: showDebug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 509004002, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: targetName
+      value: Car
+      objectReference: {fileID: 0}
+    - target: {fileID: 1864313207, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1864313210, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: showDebug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1864313210, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: targetName
+      value: Car
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537082428559681, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537082428559692, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: showDebug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537082428559692, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: targetName
+      value: Car
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537082853731220, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537082853731230, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: showDebug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537082853731230, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: targetName
+      value: Car
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537083192447416, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: showDebug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537083192447416, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: targetName
+      value: Car
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537083192447421, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     - target: {fileID: 2125537083415735212, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
       propertyPath: m_Name
       value: Checkpoints
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537083415735212, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2125537083415735213, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
       propertyPath: m_RootOrder
@@ -802,6 +901,42 @@ PrefabInstance:
     - target: {fileID: 2125537083415735213, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537083918035505, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537083918035516, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: showDebug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537083918035516, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: targetName
+      value: Car
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537084428977651, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537084428977662, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: showDebug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537084428977662, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: targetName
+      value: Car
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537084444893090, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: showDebug
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537084444893090, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: targetName
+      value: Car
+      objectReference: {fileID: 0}
+    - target: {fileID: 2125537084444893095, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
+      propertyPath: m_Layer
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9a1d9964d5ce1814a81210f55ff02800, type: 3}
@@ -860,7 +995,24 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 4492151064408716705, guid: 873c93b3beb6a41438573344a653a3f4, type: 3}
+      propertyPath: showDebugLog
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492151064408716705, guid: 873c93b3beb6a41438573344a653a3f4, type: 3}
+      propertyPath: useDebugTarget
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492151064408716717, guid: 873c93b3beb6a41438573344a653a3f4, type: 3}
+      propertyPath: increasingRays
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4492151065367023805, guid: 873c93b3beb6a41438573344a653a3f4, type: 3}
+      propertyPath: showDebugLog
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents:
+    - {fileID: 4492151064521005290, guid: 873c93b3beb6a41438573344a653a3f4, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 873c93b3beb6a41438573344a653a3f4, type: 3}
 --- !u!1001 &5701178057504815444
 PrefabInstance:

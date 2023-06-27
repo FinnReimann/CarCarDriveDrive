@@ -9,6 +9,8 @@ public class Driver : MonoBehaviour, Observer
     private TestObservee _observee;
     private GameObject car;
     
+    [SerializeField] private bool showDebugLog = false;
+    
     //Acceleration
     private float acceleration;
     private float accSpeed;
@@ -104,10 +106,9 @@ public class Driver : MonoBehaviour, Observer
             velocity = -_MaxVelocity;
 
         car.transform.Translate(Vector3.forward * velocity * Time.fixedDeltaTime);
-        Debug.Log("Car Velocity:" + velocity);
-        
+        if(showDebugLog)
+            Debug.Log("Car Velocity:" + velocity);
     }
-
 
     public void CCDDUpdate(CCDDEvents e)
     {
@@ -116,7 +117,8 @@ public class Driver : MonoBehaviour, Observer
             accSpeed = driveChange.Accelerate;
             brakeSpeed = driveChange.Break;
             steeringSpeed = driveChange.Steer;
-            Debug.Log("Driver: Got new Acceleration and Steering! Yay!" );
+            if(showDebugLog)
+                Debug.Log("Driver: Got new Acceleration and Steering! Yay!" );
         }
     }
 }
