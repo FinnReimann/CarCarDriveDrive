@@ -1,6 +1,4 @@
-using System;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class Tommy : ObserveeMonoBehaviour
 {
@@ -102,41 +100,43 @@ public class Tommy : ObserveeMonoBehaviour
     
     private float CalculateSidedPressure(float direction)
     {
+        // Check Ray Count for 0
+        if (_configuration.RayCount <= 0) return 0f;
+        
+        // Send rays in the specified direction and get the results
         bool[] rayHits = SendRays(direction);
-        int increasingValues = _configuration.IncreasingRays;
-        if (increasingValues > rayHits.Length)
+        
+        // Get Ray Hits Length
+        int rayHitsLength = rayHits.Length;
+
+        // Initialize variables for calculating pressure
+        float pressure = 0f;
+
+        // Iterate through the ray hits
+        for (int i = 0; i < rayHitsLength; i++)
         {
-            increasingValues = rayHits.Length;
+            float ratio = i / _configuration.RayCount;
+
+            // Weight calculation
+            float weight = Mathf.Exp(-ratio * _configuration.CalculationCurve);
+
+            // Accumulate the total weight
+            if (rayHits[i] && weight > pressure)
+            {
+                pressure = weight;
+            }
         }
 
-        float sum = 0f;
-        float totalWeight = 0f;
-
-        for (int i = 0; i < rayHits.Length; i++)
-        {
-            float weight;
-
-            if (i < increasingValues)
-            {
-                weight = Mathf.Pow(2f, increasingValues - i);
-            }
-            else
-            {
-                weight = Mathf.Pow(2f, i - increasingValues + 1);
-            }
-
-            sum += rayHits[i] ? 0f : weight;
-            totalWeight += weight;
-        }
-
-        float pressure = 1f - (sum / totalWeight);
+        // Clamp the pressure between 0 and 1
         pressure = Mathf.Clamp01(pressure);
 
-        if(tommysKaeferLogs) Debug.Log("Tommys Pressure: " + pressure);
+        // Log the pressure value if tommy's Kaefer logs are enabled
+        if (tommysKaeferLogs) Debug.Log("Tommys Pressure: " + pressure);
+
+        // Return the calculated pressure
         return pressure;
     }
     
-    // Update Event raussenden statt dem kram todo
     private float CalculateCurrentPressure()
     {
         float currentPressure = CalculateSidedPressure(-1) - CalculateSidedPressure(1);

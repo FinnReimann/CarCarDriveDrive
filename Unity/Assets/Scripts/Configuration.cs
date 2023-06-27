@@ -4,27 +4,23 @@ using UnityEngine.Serialization;
 
 public class Configuration : MonoBehaviour
 {
-    [SerializeField]
     [Header("Demo Settings")]
+    [SerializeField]
     private bool demoMode;
 
-// Ray-Einstellungen
-    [SerializeField]
+    // Ray-Einstellungen
     [Header("Ray Settings")]
+    [SerializeField][Tooltip("Amount of rays")]
     private int rayCount;
-    [SerializeField]
-    private int increasingRays;
-    [SerializeField] 
-    [Range(0f, 90f)]
+    [SerializeField][Range(1f, 5f)][Tooltip("Amount of pressure calculated from 1 = Linear, to 2 = exponential falling.")]
+    private int calculationCurve;
+    [SerializeField][Range(0f, 90f)][Tooltip("Angle of the innermost ray.")]
     private float minAngle;
-    [SerializeField] 
-    [Range(0f, 90f)]
+    [SerializeField][Range(0f, 90f)][Tooltip("Angle of the outermost ray.")]
     private float maxAngle;
-    [SerializeField] 
-    [Range(1f, 100f)]
+    [SerializeField][Range(1f, 100f)][Tooltip("Maximal length of the rays.")]
     private float maxRayLength;
-    [SerializeField] 
-    [Range(0f, 90f)]
+    [SerializeField][Range(0f, 90f)][Tooltip("Angle that describes how far the Rays will look to the front.")]
     private float detectionAngle;
 
 // Geschwindigkeit und Steuerungsverhalten
@@ -52,10 +48,10 @@ public class Configuration : MonoBehaviour
         set => rayCount = value;
     }
     
-    public int IncreasingRays
+    public int CalculationCurve
     {
-        get => increasingRays;
-        set => increasingRays = value;
+        get => calculationCurve;
+        set => calculationCurve = value;
     }
 
     public float MinAngle
