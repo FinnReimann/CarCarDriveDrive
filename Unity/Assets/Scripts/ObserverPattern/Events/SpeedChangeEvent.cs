@@ -5,6 +5,12 @@ using UnityEngine;
 
 public class SpeedChangeEvent : ChangeEvents
 {
+    public SpeedChangeEvent(float speed)
+    {
+        CurrentSpeed = speed;
+        RecentAverageSpeed = speed;
+    }
+
     public SpeedChangeEvent(float currentSpeed, float recentAverageSpeed)
     {
         CurrentSpeed = currentSpeed;

@@ -33,7 +33,7 @@ public class ObserveeMonoBehaviour : MonoBehaviour{
     }
 }*/
 
-public class ObserveeMonoBehaviour : MonoBehaviour
+public class ObserveeMonoBehaviour : MonoBehaviour, IObservee
 {
     private List<Observer> observers = new List<Observer>();
     // Attach an observer to the subject.

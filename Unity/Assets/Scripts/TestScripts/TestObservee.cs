@@ -14,12 +14,8 @@ public class TestObservee : ObserveeMonoBehaviour
     {
         if (changeValues)
         {
-            DriveControllEvent e = new DriveControllEvent
-            {
-                Accelerate = acceleration,
-                Break = breaking,
-                Steer = steering
-            };
+            DriveControllEvent e = new DriveControllEvent(acceleration, breaking, steering);
+
             NotifyObservers(e);
             Debug.Log("TestObservee: Notifyed Observers(driver)" );
             changeValues = false;

@@ -55,7 +55,6 @@ public class Brain : ObserveeMonoBehaviour, Observer
             _currentPressur = debug_currentPressur;
         }
         
-        
         NotifyObservers(calculateDriveControll());
     }
 
@@ -72,14 +71,14 @@ public class Brain : ObserveeMonoBehaviour, Observer
         if (e is PressureChangeEvent pressureChangeEvent)
         {
             if (!useDebugPressur)
-                _currentPressur = pressureChangeEvent.CurrentPressure * 30; // TODO delete * 30
-            if (showDebugLog)
-                Debug.Log("Get new Pressure from Tommy: " + _currentPressur);
+                _currentPressur = pressureChangeEvent.CurrentPressure;
+            Debug.Log("Get new Pressure from Tommy: " + _currentPressur);
         }
 
         if (e is NavigationEvent navigationEvent)
         {
-            
+            if(!useDebugTarget)
+                _targetSpeed = navigationEvent.TargetSpeed;
         }
     }
 
@@ -105,13 +104,8 @@ public class Brain : ObserveeMonoBehaviour, Observer
         }
 
         steering = _currentPressur;
-        
-        DriveControllEvent e = new DriveControllEvent
-        {
-            Accelerate = acceleration,
-            Break = breaking,
-            Steer = steering
-        };
+
+        DriveControllEvent e = new DriveControllEvent(acceleration, breaking, steering);
 
         return e;
     }
