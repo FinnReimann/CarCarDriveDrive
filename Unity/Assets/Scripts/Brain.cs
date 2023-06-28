@@ -27,7 +27,7 @@ public class Brain : ObserveeMonoBehaviour, Observer
     private float _targetSpeed;
 
     private Configuration _configuration;
-    
+
     private void Awake() => _configuration = GetComponentInChildren<Configuration>();
     void OnEnable()
     {
@@ -102,6 +102,8 @@ public class Brain : ObserveeMonoBehaviour, Observer
             if (showDebugLog)
                 Debug.Log("Speed Ratio: " + _currentSpeed / _targetSpeed + " breaking: " + breaking);
         }
+        if (_targetSpeed == 0f)
+            breaking = 1;
 
         // Steering
         steering = _currentPressure;

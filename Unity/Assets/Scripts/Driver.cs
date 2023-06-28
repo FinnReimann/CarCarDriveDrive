@@ -61,7 +61,6 @@ public class Driver : MonoBehaviour, Observer
         rearRight.brakeTorque = brakeFactor * brakeStrength;
         
         // Steering
-        
         float delta = Mathf.Abs(currentSteering - targetSteering);
         if (targetSteering > 0f && (currentSteering < targetSteering))
         {

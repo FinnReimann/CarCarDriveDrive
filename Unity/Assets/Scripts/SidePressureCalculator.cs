@@ -18,6 +18,23 @@ public class SidePressureCalculator : ObserveeMonoBehaviour
 
     private void OnEnable()
     {
+        CreateRayCastObjects();
+    }
+
+    private void OnDisable()
+    {
+        DestroyRayCastObjects();
+    }
+    
+    private void Update()
+    {
+        // Nicht jedes mal neuen Pressure wenn sich nix ändert todo
+        PressureChangeEvent pressureChangeEvent = new PressureChangeEvent(CalculateCurrentPressure());
+        NotifyObservers(pressureChangeEvent);
+    }
+
+    private void CreateRayCastObjects()
+    {
         // Create GameObject Lists
         _leftRayCasterObjects = new List<GameObject>();
         _rightRayCasterObjects = new List<GameObject>();
@@ -45,7 +62,7 @@ public class SidePressureCalculator : ObserveeMonoBehaviour
         }
     }
 
-    private void OnDisable()
+    private void DestroyRayCastObjects()
     {
         // Destroy temporary GameObjects
         foreach (GameObject o in _leftRayCasterObjects)
@@ -58,27 +75,20 @@ public class SidePressureCalculator : ObserveeMonoBehaviour
         }
     }
     
-    private void Update()
-    {
-        // Nicht jedes mal neuen Pressure wenn sich nix ändert todo
-        PressureChangeEvent pressureChangeEvent = new PressureChangeEvent(CalculateCurrentPressure());
-        NotifyObservers(pressureChangeEvent);
-    }
-    
     private float CalculateCurrentPressure()
     {
-        float currentPressure = CalculateSidedPressure(-1) - CalculateSidedPressure(1);
+        float currentPressure = CalculateSidedPressure(_leftRayCasterObjects) - CalculateSidedPressure(_rightRayCasterObjects);
         if(tommysKaeferPressureLogs) Debug.Log("Tommys CurrentPressure: " + currentPressure);
         return currentPressure;
     }
     
-    private float CalculateSidedPressure(float direction)
+    private float CalculateSidedPressure(List<GameObject> tempRayCasterObjects)
     {
         // Check Ray Count for 0
         if (_configuration.RayCount <= 0) return 0f;
         
-        // Send rays in the specified direction and get the results
-        bool[] rayHits = SendRays(direction);
+        // Send rays in the specified tempRayCasterObjects and get the results
+        bool[] rayHits = SendRays(tempRayCasterObjects);
         
         // Get Ray Hits Length
         int rayCount = _configuration.RayCount;
@@ -88,17 +98,14 @@ public class SidePressureCalculator : ObserveeMonoBehaviour
         // Iterate through the ray hits
         for (int i = 0; i < rayCount; i++)
         {
+            if(!rayHits[i]) continue;
             // Get ratio of ray position
             float ratio = i / (float)rayCount;
             // Weight calculation
-            float weight = Mathf.Exp(-ratio * _configuration.CalculationCurve);
-            // Accumulate the total weight
-            if (rayHits[i] && weight > pressure) pressure = weight;
+            pressure = Mathf.Exp(-ratio * _configuration.CalculationCurve);
+            break;
         }
-
-        // Clamp the pressure between 0 and 1
-        // pressure = Mathf.Clamp01(pressure);
-
+        
         // Log the pressure value if tommy's Kaefer logs are enabled
         if (tommysKaeferPressureLogs) Debug.Log("Tommys Pressure: " + pressure);
 
@@ -106,10 +113,8 @@ public class SidePressureCalculator : ObserveeMonoBehaviour
         return pressure;
     }
 
-    private bool[] SendRays(float direction)
+    private bool[] SendRays(List<GameObject> tempRayCasterObjects)
     {
-        List<GameObject> tempRayCasterObjects = direction == -1 ? _leftRayCasterObjects : _rightRayCasterObjects;
-
         float rayLength = _configuration.MaxRayLength;
         int rayCount = _configuration.RayCount;
         bool[] rayHits = new bool[rayCount];
