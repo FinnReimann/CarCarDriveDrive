@@ -31,16 +31,30 @@ public class Brain : ObserveeMonoBehaviour, Observer
     private void Awake() => _configuration = GetComponentInChildren<Configuration>();
     void OnEnable()
     {
-        GetComponentInChildren<Speedometer>().Attach(this);
-        GetComponentInChildren<SidePressureCalculator>().Attach(this);
-        GetComponentInChildren<Navigator>().Attach(this);
+        try
+        {
+            GetComponentInChildren<Speedometer>().Attach(this);
+            GetComponentInChildren<SidePressureCalculator>().Attach(this);
+            GetComponentInChildren<Navigator>().Attach(this);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("The Brain needs a Speedometer, SidePressureCalulator and a Navigator to work proper");
+        }
     }
     
     void OnDisable()
     {
-        GetComponentInChildren<Speedometer>().Detach(this);
-        GetComponentInChildren<SidePressureCalculator>().Detach(this);
-        GetComponentInChildren<Navigator>().Detach(this);
+        try
+        {
+            GetComponentInChildren<Speedometer>().Detach(this);
+            GetComponentInChildren<SidePressureCalculator>().Detach(this);
+            GetComponentInChildren<Navigator>().Detach(this);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("The Brain needs a Speedometer, SidePressureCalulator and a Navigator to work proper");
+        }
     }
 
     // Update is called once per frame

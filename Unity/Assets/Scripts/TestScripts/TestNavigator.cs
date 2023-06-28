@@ -40,6 +40,8 @@ public class TestNavigator : Navigator
             enteredCheckpoints++;
         if (enteredCheckpoints == CheckpointCount)
         {
+            if(showDebug)
+                Debug.Log("Complete Round " + drivenRounds + " with speed of" + targetSpeed);
             enteredCheckpoints = 0;
             drivenRounds++;
             targetSpeed += speedIncreasingPerRound;

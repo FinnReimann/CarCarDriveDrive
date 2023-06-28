@@ -9,5 +9,4 @@ public class PressureChangeEvent : ChangeEvents
         CurrentPressure = currentPressure;
     }
     public float CurrentPressure {set; get; }
-    
 }

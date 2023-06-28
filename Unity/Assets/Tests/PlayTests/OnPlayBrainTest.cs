@@ -8,16 +8,11 @@ using UnityEngine.TestTools;
 public class OnPlayBrainTest
 {
     private GameObject car;
-    private Brain brain;
-
     [SetUp]
     public void SetUp()
     {
         car = new GameObject();
         car.AddComponent<Configuration>();
-        car.AddComponent<Speedometer>();
-        car.AddComponent<SidePressureCalculator>();
-        car.AddComponent<Navigator>();
     }
     
     [UnityTest]
@@ -25,7 +20,7 @@ public class OnPlayBrainTest
     {
         //Arrange
         EventTestObserver testObserver = new EventTestObserver();
-        brain = car.AddComponent<Brain>();
+        Brain brain = car.AddComponent<Brain>();
         //Act
         brain.CCDDUpdate(new NavigationEvent(10f));
         brain.CCDDUpdate(new SpeedChangeEvent(5f));
@@ -57,7 +52,7 @@ public class OnPlayBrainTest
     {
         //Arrange
         EventTestObserver testObserver = new EventTestObserver();
-        brain = car.AddComponent<Brain>();
+        Brain brain = car.AddComponent<Brain>();
         //Act
         brain.CCDDUpdate(new NavigationEvent(100000f));
         brain.CCDDUpdate(new SpeedChangeEvent(5f));
@@ -89,7 +84,7 @@ public class OnPlayBrainTest
     {
         //Arrange
         EventTestObserver testObserver = new EventTestObserver();
-        brain = car.AddComponent<Brain>();
+        Brain brain = car.AddComponent<Brain>();
         //Act
         brain.CCDDUpdate(new NavigationEvent(10f));
         brain.CCDDUpdate(new SpeedChangeEvent(15f));
@@ -121,7 +116,7 @@ public class OnPlayBrainTest
     {
         //Arrange
         EventTestObserver testObserver = new EventTestObserver();
-        brain = car.AddComponent<Brain>();
+        Brain brain = car.AddComponent<Brain>();
         //Act
         brain.CCDDUpdate(new NavigationEvent(0f));
         brain.CCDDUpdate(new SpeedChangeEvent(100000f));
@@ -153,7 +148,7 @@ public class OnPlayBrainTest
     {
         //Arrange
         EventTestObserver testObserver = new EventTestObserver();
-        brain = car.AddComponent<Brain>();
+        Brain brain = car.AddComponent<Brain>();
         //Act
         brain.CCDDUpdate(new NavigationEvent(0f));
         brain.CCDDUpdate(new SpeedChangeEvent(0f));
@@ -168,8 +163,8 @@ public class OnPlayBrainTest
             {
                 if(events is DriveControllEvent driveControllEvent)
                 {
-                    Assert.AreEqual(driveControllEvent.Accelerate, 0);
-                    Assert.AreEqual(driveControllEvent.Brake, 0);
+                    Assert.AreEqual(0f,driveControllEvent.Accelerate);
+                    Assert.AreEqual(1f,driveControllEvent.Brake);
                 }
             }
         }
@@ -184,7 +179,7 @@ public class OnPlayBrainTest
     {
         //Arrange
         EventTestObserver testObserver = new EventTestObserver();
-        brain = car.AddComponent<Brain>();
+        Brain brain = car.AddComponent<Brain>();
         //Act
         brain.CCDDUpdate(new PressureChangeEvent(-1f));
         brain.Attach(testObserver);
@@ -198,7 +193,7 @@ public class OnPlayBrainTest
             {
                 if(events is DriveControllEvent driveControllEvent)
                 {
-                    Assert.Less(driveControllEvent.Steer, 0);
+                    Assert.Less(driveControllEvent.Steer,0);
                 }
             }
         }
@@ -213,7 +208,7 @@ public class OnPlayBrainTest
     {
         //Arrange
         EventTestObserver testObserver = new EventTestObserver();
-        brain = car.AddComponent<Brain>();
+        Brain brain = car.AddComponent<Brain>();
         //Act
         brain.CCDDUpdate(new PressureChangeEvent(1f));
         brain.Attach(testObserver);
@@ -227,7 +222,7 @@ public class OnPlayBrainTest
             {
                 if(events is DriveControllEvent driveControllEvent)
                 {
-                    Assert.Greater(driveControllEvent.Steer, 0);
+                    Assert.Greater(driveControllEvent.Steer,0f);
                 }
             }
         }

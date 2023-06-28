@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Driver : MonoBehaviour, Observer
 {
-    private Brain brainToWatch;
     private GameObject car;
     
     [SerializeField] private bool showDebugLog = false;
@@ -18,9 +17,9 @@ public class Driver : MonoBehaviour, Observer
     [SerializeField]private float brakeFactor = 500.0f;
     
     
-    private float acceleration;
-    private float braking;
-    private float brakeStrength;
+    private float _acceleration;
+    private float _braking;
+    private float _brakeStrength;
     private float _velocity;
 
     [Header("Steering")]
@@ -28,67 +27,60 @@ public class Driver : MonoBehaviour, Observer
     [SerializeField]private float steeringAcceleration = 2.0f;
     [SerializeField] private float selfCenteringFactor = 0.99f;
     
-    private float targetSteering;
-    private float currentSteering;
+    private float _targetSteering;
+    private float _currentSteering;
 
-    [Header("for testing")]
-    [SerializeField]private float _MaxVelocity = 50.0f;
-    //[SerializeField] private float TestSteeringSpeed;
-    //[SerializeField] private float TestAccSpeed;
-
-    private void Awake()
+    void OnEnable()
     {
-        brainToWatch = GetComponentInChildren<Brain>();
+        GetComponentInChildren<Brain>().Attach(this);
     }
-
-    // Start is called before the first frame update
-    void Start()
+    
+    void OnDisable()
     {
-        //Nachrichten vom Brain abonnieren
-        brainToWatch.Attach(this);
+        GetComponentInChildren<Brain>().Detach(this);
     }
-
+    
     private void FixedUpdate()
     {
         // Acceleration
-        frontLeft.motorTorque = accelerationFactor * acceleration;
-        frontRight.motorTorque = accelerationFactor * acceleration;
+        frontLeft.motorTorque = accelerationFactor * _acceleration;
+        frontRight.motorTorque = accelerationFactor * _acceleration;
         
         // Brake
-        frontLeft.brakeTorque = brakeFactor * brakeStrength;
-        frontRight.brakeTorque = brakeFactor * brakeStrength;
-        rearLeft.brakeTorque = brakeFactor * brakeStrength;
-        rearRight.brakeTorque = brakeFactor * brakeStrength;
+        frontLeft.brakeTorque = brakeFactor * _brakeStrength;
+        frontRight.brakeTorque = brakeFactor * _brakeStrength;
+        rearLeft.brakeTorque = brakeFactor * _brakeStrength;
+        rearRight.brakeTorque = brakeFactor * _brakeStrength;
         
         // Steering
-        float delta = Mathf.Abs(currentSteering - targetSteering);
-        if (targetSteering > 0f && (currentSteering < targetSteering))
+        float delta = Mathf.Abs(_currentSteering - _targetSteering);
+        if (_targetSteering > 0f && (_currentSteering < _targetSteering))
         {
             // Fast to Target
-            currentSteering += delta * steeringAcceleration;
+            _currentSteering += delta * steeringAcceleration;
         }
-        else if(targetSteering < 0f && (currentSteering > targetSteering))
+        else if(_targetSteering < 0f && (_currentSteering > _targetSteering))
         {
             // Fast to Target
-            currentSteering -= delta * steeringAcceleration;
+            _currentSteering -= delta * steeringAcceleration;
         }
         else
         {
             // Slow back to Target
-            currentSteering *= selfCenteringFactor;
+            _currentSteering *= selfCenteringFactor;
         }
-        Mathf.Clamp(currentSteering, -1, 1);
-        frontLeft.steerAngle = maxSteeringAngle * currentSteering;
-        frontRight.steerAngle = maxSteeringAngle * currentSteering;
+        Mathf.Clamp(_currentSteering, -1, 1);
+        frontLeft.steerAngle = maxSteeringAngle * _currentSteering;
+        frontRight.steerAngle = maxSteeringAngle * _currentSteering;
     }
     
     public void CCDDUpdate(CCDDEvents e)
     {
         if (e is DriveControllEvent driveChange)
         {
-            acceleration = driveChange.Accelerate;
-            brakeStrength = driveChange.Brake;
-            targetSteering = driveChange.Steer;
+            _acceleration = driveChange.Accelerate;
+            _brakeStrength = driveChange.Brake;
+            _targetSteering = driveChange.Steer;
             if(showDebugLog)
                 Debug.Log("Driver: Got new Acceleration and Steering! Yay!" );
         }
