@@ -4,13 +4,10 @@ using UnityEngine;
 public class Brain : ObserveeMonoBehaviour, Observer
 {
     //(Acceleration Response): Leisurely, Dynamic
-    [SerializeField][Range(0f, 1f)][Tooltip("0 is Leisurely(Exp), 0.5 is average (Lin) ,1 is Dynamic(Log).")]
     private float accelerationResponse = 0.5f;
     //(Starting Behavior): Gentle, Powerful
-    [SerializeField][Range(0f, 1f)][Tooltip("Close to 0 is Gentle, 1 is Powerful. 0 is no Acceleration at all")]
     private float startingBehabior = 0.75f;
     //(Breaking Response): Early, Late
-    [SerializeField][Range(0f, 1f)][Tooltip("Close to 0 is Early Response, 1 is late Response")]
     private float breakingResponse = 0.5f;
 
     [Header("Debug Variables")] 
@@ -39,8 +36,9 @@ public class Brain : ObserveeMonoBehaviour, Observer
         }
         catch (Exception e)
         {
-            Debug.LogWarning("The Brain needs a Speedometer, SidePressureCalulator and a Navigator to work proper");
+            Debug.LogWarning("The Brain needs a Speedometer, SidePressureCalculator and a Navigator to work proper");
         }
+        GetConfig();
     }
     
     void OnDisable()
@@ -53,13 +51,14 @@ public class Brain : ObserveeMonoBehaviour, Observer
         }
         catch (Exception e)
         {
-            Debug.LogWarning("The Brain needs a Speedometer, SidePressureCalulator and a Navigator to work proper");
+            Debug.LogWarning("The Brain needs a Speedometer, SidePressureCalculator and a Navigator to work proper");
         }
     }
 
     // Update is called once per frame
     void Update()
     {
+        GetConfig();
         if (useDebugTarget)
             _targetSpeed = debug_targetSpeed;
         if (useDebugTacho)
@@ -68,6 +67,13 @@ public class Brain : ObserveeMonoBehaviour, Observer
             _currentPressure = debug_currentPressur;
         
         NotifyObservers(CalculateDriveControll());
+    }
+
+    private void GetConfig()
+    {
+        accelerationResponse = _configuration.AccelerationResponse;
+        startingBehabior = _configuration.StartingBehabior;
+        breakingResponse = _configuration.AccelerationResponse;
     }
 
     public void CCDDUpdate(CCDDEvents e)

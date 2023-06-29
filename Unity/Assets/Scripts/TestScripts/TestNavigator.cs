@@ -13,6 +13,7 @@ public class TestNavigator : Navigator
 
     protected override void Update()
     {
+        GetConfig();
         if (showConstantDebug)
             Debug.Log("The Car is in Round: " + drivenRounds + " and passed through " + enteredCheckpoints + " Checkpoints. Current Speed is " + lastSpeed);
         
