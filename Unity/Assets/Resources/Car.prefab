@@ -259,15 +259,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   demoMode: 0
+  targetSpeedInKmh: 45
   rayCount: 15
   calculationCurve: 3.92
   minAngle: 10
   maxAngle: 40
   maxRayLength: 10
   detectionAngle: 65
-  maxSpeed: 0
-  steeringBehavior: 0
-  accelerationBehavior: 0
+  accelerationResponse: 0.5
+  startingBehabior: 0.75
+  breakingResponse: 0.5
   layerMask:
     serializedVersion: 2
     m_Bits: 64
@@ -283,9 +284,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e2e2a1990fe7604f8097b6700073fa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  accelerationResponse: 1
-  startingBehabior: 0.5
-  breakingResponse: 0.75
   useDebugTarget: 0
   useDebugTacho: 0
   useDebugPressur: 0
@@ -306,6 +304,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debug: 0
+  currentSpeedInKmh: 0
 --- !u!114 &8094774728029561662
 MonoBehaviour:
   m_ObjectHideFlags: 0
