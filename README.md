@@ -8,7 +8,7 @@ This asset is simply dragged and dropped onto the model of the car in the Unity 
 The driving behavior can be influenced with a few, easy to understand, parameters.
 This software can be used for background driving in games, to run city simulations or as AI in racing games.
 
-[demo-gif](./InstallGuide/Demo.gif)
+![demo-gif](./InstallGuide/Demo.gif)
 
 ## Install Guide:
 Download the latest release from the release list.
