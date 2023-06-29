@@ -9,7 +9,7 @@ public class Brain : ObserveeMonoBehaviour, Observer
     private float startingBehabior = 0.75f;
     //(Breaking Response): Early, Late
     private float breakingResponse = 0.5f;
-
+    
     [Header("Debug Variables")] 
     [SerializeField] private bool useDebugTarget = false;
     [SerializeField] private bool useDebugTacho = false;
