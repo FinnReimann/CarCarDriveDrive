@@ -4,26 +4,39 @@ using UnityEngine;
 public class Brain : ObserveeMonoBehaviour, Observer
 {
     //(Acceleration Response): Leisurely, Dynamic
-    private float accelerationResponse = 0.5f;
+    private float _accelerationResponse = 0.5f;
     //(Starting Behavior): Gentle, Powerful
-    private float startingBehabior = 0.75f;
+    private float _startingBehabior = 0.75f;
     //(Breaking Response): Early, Late
-    private float breakingResponse = 0.5f;
+    private float _breakingResponse = 0.5f;
+    
+    
+    private float _obstacleEmergancyDistance;
+    
+    private float _currentSpeed;
+    private float _currentPressure;
+    private float _targetSpeed;
+    
+    
+    
+    private float _obstacleDistance = -1f;
+    
+    private Configuration _configuration;
     
     [Header("Debug Variables")] 
     [SerializeField] private bool useDebugTarget = false;
     [SerializeField] private bool useDebugTacho = false;
     [SerializeField] private bool useDebugPressur = false;
+    [SerializeField] private bool useDebugObstacleDistance = false;
     [SerializeField] private bool showDebugLog = false;
     [SerializeField] private float debug_currentSpeed = 0f;
     [SerializeField] private float debug_targetSpeed = 100f;
     [SerializeField] private float debug_currentPressur = 0f;
+    [SerializeField] private float debug_obstacleDistance = -1f;
     
-    private float _currentSpeed;
-    private float _currentPressure;
-    private float _targetSpeed;
+    
 
-    private Configuration _configuration;
+    
 
     private void Awake() => _configuration = GetComponentInChildren<Configuration>();
     void OnEnable()
@@ -36,8 +49,18 @@ public class Brain : ObserveeMonoBehaviour, Observer
         }
         catch (Exception e)
         {
-            Debug.LogWarning("The Brain needs a Speedometer, SidePressureCalculator and a Navigator to work proper");
+            Debug.LogWarning("The Brain needs a Speedometer, SidePressureCalculator and a Navigator to work proper. Exception:" + e);
         }
+        
+        try
+        {
+            GetComponentInChildren<CollisionDetection>().Attach(this);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("If you want to use the Obstacledetection, you must ad a CollisionDetection Component. Exception:" + e);
+        }
+        
         GetConfig();
     }
     
@@ -51,7 +74,16 @@ public class Brain : ObserveeMonoBehaviour, Observer
         }
         catch (Exception e)
         {
-            Debug.LogWarning("The Brain needs a Speedometer, SidePressureCalculator and a Navigator to work proper");
+            Debug.LogWarning("The Brain needs a Speedometer, SidePressureCalculator and a Navigator to work proper. Exception:" + e);
+        }
+
+        try
+        {
+            GetComponentInChildren<CollisionDetection>().Detach(this);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("If you want to use the Obstacledetection, you must ad a CollisionDetection Component. Exception:" + e);
         }
     }
 
@@ -65,15 +97,18 @@ public class Brain : ObserveeMonoBehaviour, Observer
             _currentSpeed = debug_currentSpeed;
         if (useDebugPressur)
             _currentPressure = debug_currentPressur;
+        if (useDebugObstacleDistance)
+            _obstacleDistance = debug_obstacleDistance;
         
         NotifyObservers(CalculateDriveControll());
     }
 
     private void GetConfig()
     {
-        accelerationResponse = _configuration.AccelerationResponse;
-        startingBehabior = _configuration.StartingBehabior;
-        breakingResponse = _configuration.AccelerationResponse;
+        _accelerationResponse = _configuration.AccelerationResponse;
+        _startingBehabior = _configuration.StartingBehabior;
+        _breakingResponse = _configuration.BreakingResponse;
+        _obstacleEmergancyDistance = _configuration.ObstacleEmergancyBreakDistance;
     }
 
     public void CCDDUpdate(CCDDEvents e)
@@ -99,6 +134,12 @@ public class Brain : ObserveeMonoBehaviour, Observer
             if(!useDebugTarget)
                 _targetSpeed = navigationEvent.TargetSpeed;
         }
+
+        if (e is ObstacleAheadEvent obstacleAheadEvent)
+        {
+            if(!useDebugObstacleDistance)
+                _obstacleDistance = obstacleAheadEvent.Distance;
+        }
     }
 
     private DriveControllEvent CalculateDriveControll()
@@ -107,20 +148,34 @@ public class Brain : ObserveeMonoBehaviour, Observer
         float acceleration = 0f;
         float breaking = 0f;
         float steering = 0f;
+        float targetSpeed = _targetSpeed;
         
-        float speedRatio = _currentSpeed / _targetSpeed;
+        if (_obstacleDistance >= 0f)
+        {
+            if (_obstacleDistance <= _obstacleEmergancyDistance)
+            {
+                breaking = 1;
+            }
+            targetSpeed = _obstacleDistance;
+            Debug.Log(acceleration + " and " + breaking);
+        }
+        
+        
+        
+        
+        float speedRatio = _currentSpeed / targetSpeed;
         if (speedRatio < 1)
         {   // Accelerate
-            acceleration = CalcCurve(speedRatio, startingBehabior, accelerationResponse);
+            acceleration = CalcCurve(speedRatio, _startingBehabior, _accelerationResponse);
             if (showDebugLog)
-                Debug.Log("Speed Ratio: " + _currentSpeed / _targetSpeed + " acceleration: " + acceleration);
+                Debug.Log("Speed Ratio: " + _currentSpeed / targetSpeed + " acceleration: " + acceleration);
             
         }
         else if (speedRatio > 1)
         {   // Break
-            breaking = 1f-CalcCurve(speedRatio - 1f, 1f, breakingResponse);
+            breaking = 1f-CalcCurve(speedRatio - 1f, 1f, _breakingResponse);
             if (showDebugLog)
-                Debug.Log("Speed Ratio: " + _currentSpeed / _targetSpeed + " breaking: " + breaking);
+                Debug.Log("Speed Ratio: " + _currentSpeed / targetSpeed + " breaking: " + breaking);
         }
         if (_targetSpeed == 0f)
             breaking = 1;
@@ -133,6 +188,13 @@ public class Brain : ObserveeMonoBehaviour, Observer
         return e;
     }
 
+    
+    
+    
+    
+    
+    
+    
     // curveBehavior should be beetween 0 and 1. So 0.5 is linear from Startingpoint to 0.
     // 0-0.5 is logarithmic (fast start, slow end) and 0.5-1 is exponentially (slow start, fast End)
     private float CalcCurve(float input,float startingPoint, float curveBehavior)

@@ -27,7 +27,7 @@ public class Configuration : MonoBehaviour
     [SerializeField][Range(0f, 90f)][Tooltip("Angle that describes how far the Rays will look to the front.")]
     private float detectionAngle = 0f;
 
-// Geschwindigkeit und Steuerungsverhalten
+    // Geschwindigkeit und Steuerungsverhalten
     [Header("Acceleration and Brake Behavior Settings")]
     //(Acceleration Response): Leisurely, Dynamic
     [SerializeField][Range(0f, 1f)][Tooltip("0 is Leisurely(Exp), 0.5 is average (Lin) ,1 is Dynamic(Log).")]
@@ -39,8 +39,12 @@ public class Configuration : MonoBehaviour
     [SerializeField][Range(0f, 1f)][Tooltip("Close to 0 is Early Response, 1 is late Response")]
     private float breakingResponse = 0.5f;
 
+    // Hindernisserkennung
+    [Header("Obstacle Detection")] 
+    [SerializeField] private float maxDetectionLength = 10f;
+    [SerializeField] private float obstacleEmergancyBreakDistance = 2f;
 
-
+    
     // Erkennungseinstellungen
     [FormerlySerializedAs("raycastMask")]
     [SerializeField]
@@ -118,5 +122,17 @@ public class Configuration : MonoBehaviour
     {
         get => breakingResponse;
         set => breakingResponse = value;
+    }
+    
+    public float MaxDetectionLength
+    {
+        get => maxDetectionLength;
+        set => maxDetectionLength = value;
+    }
+    
+    public float ObstacleEmergancyBreakDistance
+    {
+        get => obstacleEmergancyBreakDistance;
+        set => obstacleEmergancyBreakDistance = value;
     }
 }

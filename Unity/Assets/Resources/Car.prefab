@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 8520663801434454123}
   - component: {fileID: 7356058233709563458}
   - component: {fileID: 6694717370297906158}
-  m_Layer: 0
+  - component: {fileID: 1671418504638334263}
+  m_Layer: 8
   m_Name: Carroseriieee
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,6 +87,19 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &1671418504638334263
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7357322618177547967}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.5500004, y: 1.2359493, z: 3.6780746}
+  m_Center: {x: 0.00000003104727, y: 0.88202524, z: 0.083539605}
 --- !u!1 &8094774727753423423
 GameObject:
   m_ObjectHideFlags: 0
@@ -224,6 +238,7 @@ GameObject:
   - component: {fileID: 8094774728029561663}
   - component: {fileID: 8094774728029561662}
   - component: {fileID: 8094774728557164935}
+  - component: {fileID: 9223180111367350897}
   m_Layer: 0
   m_Name: ControllSoftware
   m_TagString: Untagged
@@ -269,6 +284,8 @@ MonoBehaviour:
   accelerationResponse: 0.5
   startingBehabior: 0.75
   breakingResponse: 0.5
+  maxDetectionLength: 10
+  obstacleEmergancyBreakDistance: 2
   layerMask:
     serializedVersion: 2
     m_Bits: 64
@@ -287,10 +304,12 @@ MonoBehaviour:
   useDebugTarget: 0
   useDebugTacho: 0
   useDebugPressur: 0
+  useDebugObstacleDistance: 0
   showDebugLog: 0
   debug_currentSpeed: 0
   debug_targetSpeed: 5
   debug_currentPressur: 0
+  debug_obstacleDistance: -1
 --- !u!114 &8094774728029561663
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -337,6 +356,24 @@ MonoBehaviour:
   showDebug: 0
   showConstantDebug: 0
   speedIncreasingPerRound: 1
+--- !u!114 &9223180111367350897
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8094774728029561650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 09b650a08f01ab245893e62f27bad937, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useDebug: 0
+  distance: 0
+  rayOffset: {x: 0, y: -1, z: 2}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!1 &8094774728345781268
 GameObject:
   m_ObjectHideFlags: 0
@@ -473,7 +510,7 @@ GameObject:
   - component: {fileID: 8094774727883705975}
   - component: {fileID: 8094774727520670637}
   - component: {fileID: 2528362026616111806}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Car
   m_TagString: Vehicle
   m_Icon: {fileID: 0}
@@ -509,8 +546,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1.5833129, y: 0.33403915, z: 3.7182777}
-  m_Center: {x: 0.014833033, y: 0.4163029, z: 0.07129943}
+  m_Size: {x: 1.57, y: 0.18, z: 3.35}
+  m_Center: {x: 0.014833033, y: 0.25, z: 0.07129943}
 --- !u!54 &8094774727520670637
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -544,9 +581,9 @@ MonoBehaviour:
   frontRight: {fileID: 8094774727949521512}
   rearLeft: {fileID: 8094774729061742125}
   rearRight: {fileID: 8094774728345781266}
-  accelerationFactor: 500
+  accelerationFactor: 700
   brakeFactor: 500
-  maxSteeringAngle: 90
+  maxSteeringAngle: 50
   steeringAcceleration: 0.9
   selfCenteringFactor: 0.99
 --- !u!1 &9106598029397058381
