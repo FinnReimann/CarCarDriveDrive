@@ -12,7 +12,7 @@ public class Configuration : MonoBehaviour
     [SerializeField][Tooltip("The target speed the car trys to reach in km/h. Internally calculated in m/s.")]
     private float targetSpeedInKmh;
 
-    // Ray-Einstellungen
+    // Ray Settings
     [Header("Ray Settings")]
     [SerializeField][Tooltip("Amount of rays")]
     private int rayCount = 8;
@@ -27,7 +27,7 @@ public class Configuration : MonoBehaviour
     [SerializeField][Range(0f, 90f)][Tooltip("Angle that describes how far the Rays will look to the front.")]
     private float detectionAngle = 0f;
 
-    // Geschwindigkeit und Steuerungsverhalten
+    // GAcceleration and Brake Behavior Settings
     [Header("Acceleration and Brake Behavior Settings")]
     //(Acceleration Response): Leisurely, Dynamic
     [SerializeField][Range(0f, 1f)][Tooltip("0 is Leisurely(Exp), 0.5 is average (Lin) ,1 is Dynamic(Log).")]
@@ -39,18 +39,20 @@ public class Configuration : MonoBehaviour
     [SerializeField][Range(0f, 1f)][Tooltip("Close to 0 is Early Response, 1 is late Response")]
     private float breakingResponse = 0.5f;
 
-    // Hindernisserkennung
+    // Obstacle detection 
     [Header("Obstacle Detection")] 
     [SerializeField] private float maxDetectionLength = 10f;
     [SerializeField] private float obstacleEmergancyBreakDistance = 2f;
-
+    [SerializeField] private float obstacleBrakeFaktor = 1f;
+    [SerializeField] private Vector3 obstacleRayOffset = new Vector3(0f,-1f,2f);
     
-    // Erkennungseinstellungen
-    [FormerlySerializedAs("raycastMask")]
-    [SerializeField]
+    
+    // Layer Configuration
     [Header("Layermask")]
-    private LayerMask layerMask; 
-
+    [SerializeField] private LayerMask streetBorderlayerMask;
+    [SerializeField] private LayerMask obstacleLayerMask;
+    
+    // Getter and Setter for every Variable
     public bool DemoMode
     {
         get => demoMode;
@@ -97,8 +99,8 @@ public class Configuration : MonoBehaviour
 
     public LayerMask LayerMask
     {
-        get => layerMask;
-        set => layerMask = value;
+        get => streetBorderlayerMask;
+        set => streetBorderlayerMask = value;
     }
     public float TargetSpeedInKmh
     {
@@ -134,5 +136,23 @@ public class Configuration : MonoBehaviour
     {
         get => obstacleEmergancyBreakDistance;
         set => obstacleEmergancyBreakDistance = value;
+    }
+    
+    public float ObstacleBrakeFaktor
+    {
+        get => obstacleBrakeFaktor;
+        set => obstacleBrakeFaktor = value;
+    }
+    
+    public Vector3 ObstacleRayOffset
+    {
+        get => obstacleRayOffset;
+        set => obstacleRayOffset = value;
+    }
+
+    public LayerMask ObstacleLayerMask
+    {
+        get => obstacleLayerMask;
+        set => obstacleLayerMask = value;
     }
 }

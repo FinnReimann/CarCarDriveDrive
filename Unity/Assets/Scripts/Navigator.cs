@@ -5,11 +5,13 @@ using UnityEngine;
 
 public class Navigator : ObserveeMonoBehaviour
 {
+    // Cached Variables
     public float targetSpeed;
     protected float lastSpeed;
+    
     private Configuration _configuration;
 
-    
+    // Get the configuration from children
     private void Awake() => _configuration = GetComponentInChildren<Configuration>();
 
     public void Start()
@@ -18,6 +20,7 @@ public class Navigator : ObserveeMonoBehaviour
         GetConfig();
     }
 
+    // Update the Config in every frame, and if the target speed was changed send the new speed as event
     protected virtual void Update()
     {
         GetConfig();
@@ -27,7 +30,7 @@ public class Navigator : ObserveeMonoBehaviour
             NotifyObservers(new NavigationEvent(targetSpeed));
         }
     }
-    
+    // Read Config from Configclass and cache them in variables
     protected void GetConfig()
     {
         targetSpeed = _configuration.TargetSpeedInKmh / 3.6f;
