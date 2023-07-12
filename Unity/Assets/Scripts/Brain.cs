@@ -3,26 +3,27 @@ using UnityEngine;
 
 public class Brain : ObserveeMonoBehaviour, Observer
 {
-    //(Acceleration Response): Leisurely, Dynamic
+    // (Acceleration Response): Leisurely, Dynamic
     private float _accelerationResponse = 0.5f;
-    //(Starting Behavior): Gentle, Powerful
+    // (Starting Behavior): Gentle, Powerful
     private float _startingBehabior = 0.75f;
-    //(Breaking Response): Early, Late
+    // (Breaking Response): Early, Late
     private float _breakingResponse = 0.5f;
     
-    
+    // Cached Config Variables
     private float _obstacleEmergancyDistance;
+    private float _targetSpeed;
+    private float _obstacleBrakeFaktor;
     
+    // Variables in which the current state is saved
+    private float _obstacleDistance = -1f;
     private float _currentSpeed;
     private float _currentPressure;
-    private float _targetSpeed;
     
-    
-    
-    private float _obstacleDistance = -1f;
-    
+    // Link to Configuration
     private Configuration _configuration;
     
+    // Debug Variables for test use, without other Components
     [Header("Debug Variables")] 
     [SerializeField] private bool useDebugTarget = false;
     [SerializeField] private bool useDebugTacho = false;
@@ -34,13 +35,14 @@ public class Brain : ObserveeMonoBehaviour, Observer
     [SerializeField] private float debug_currentPressur = 0f;
     [SerializeField] private float debug_obstacleDistance = -1f;
     
-    
 
-    
-
+    // Get the configuration from children
     private void Awake() => _configuration = GetComponentInChildren<Configuration>();
+    
+    // Register on Observers and throw Errors if not find
     void OnEnable()
     {
+        GetConfig();
         try
         {
             GetComponentInChildren<Speedometer>().Attach(this);
@@ -63,7 +65,7 @@ public class Brain : ObserveeMonoBehaviour, Observer
         
         GetConfig();
     }
-    
+    // Deregister on Observers and throw Errors if not find
     void OnDisable()
     {
         try
@@ -87,10 +89,9 @@ public class Brain : ObserveeMonoBehaviour, Observer
         }
     }
 
-    // Update is called once per frame
+    // Notify Observer (Driver) with Calculated Drive Control. Get the debug values if they where used.
     void Update()
     {
-        GetConfig();
         if (useDebugTarget)
             _targetSpeed = debug_targetSpeed;
         if (useDebugTacho)
@@ -100,17 +101,20 @@ public class Brain : ObserveeMonoBehaviour, Observer
         if (useDebugObstacleDistance)
             _obstacleDistance = debug_obstacleDistance;
         
-        NotifyObservers(CalculateDriveControll());
+        NotifyObservers(CalculateDriveControl());
     }
 
+    // Read Config from Configclass and cache them in variables
     private void GetConfig()
     {
         _accelerationResponse = _configuration.AccelerationResponse;
         _startingBehabior = _configuration.StartingBehabior;
         _breakingResponse = _configuration.BreakingResponse;
         _obstacleEmergancyDistance = _configuration.ObstacleEmergancyBreakDistance;
+        _obstacleBrakeFaktor = _configuration.ObstacleBrakeFaktor;
     }
 
+    // Check for event type - and if, update cache values
     public void CCDDUpdate(CCDDEvents e)
     {
         if (e is SpeedChangeEvent speedChangeEvent)
@@ -142,27 +146,28 @@ public class Brain : ObserveeMonoBehaviour, Observer
         }
     }
 
-    private DriveControllEvent CalculateDriveControll()
+    // Calculate the DriveControllEvent based on the current values
+    private DriveControllEvent CalculateDriveControl()
     {
-        // Acceleration and braking
+        // Init with default Values
         float acceleration = 0f;
-        float breaking = 0f;
+        float braking = 0f;
         float steering = 0f;
         float targetSpeed = _targetSpeed;
         
+        // Check if an Obstacle is ahead. (-1 == no Obstacle)
         if (_obstacleDistance >= 0f)
         {
+            // If the Distance is lower than the configurable EmergancyDistance, return early with full braking 
             if (_obstacleDistance <= _obstacleEmergancyDistance)
             {
-                breaking = 1;
+                return new DriveControllEvent(acceleration, 1f, steering);
             }
-            targetSpeed = _obstacleDistance;
-            Debug.Log(acceleration + " and " + breaking);
+            // Set the target speed to the obstacle distance multiplied the configurable factor
+            targetSpeed = _obstacleDistance * _obstacleBrakeFaktor;
         }
         
-        
-        
-        
+        // Calculate the speed ratio from the current speed to the target speed
         float speedRatio = _currentSpeed / targetSpeed;
         if (speedRatio < 1)
         {   // Accelerate
@@ -172,28 +177,21 @@ public class Brain : ObserveeMonoBehaviour, Observer
             
         }
         else if (speedRatio > 1)
-        {   // Break
-            breaking = 1f-CalcCurve(speedRatio - 1f, 1f, _breakingResponse);
+        {   // Brake
+            braking = 1f-CalcCurve(speedRatio - 1f, 1f, _breakingResponse);
             if (showDebugLog)
-                Debug.Log("Speed Ratio: " + _currentSpeed / targetSpeed + " breaking: " + breaking);
+                Debug.Log("Speed Ratio: " + _currentSpeed / targetSpeed + " breaking: " + braking);
         }
+        // If the target speed is 0, activate the parking brake
         if (_targetSpeed == 0f)
-            breaking = 1;
+            braking = 1;
 
-        // Steering
+        // Steering; just uses the current pressure value. Modifications should placed here.
         steering = _currentPressure;
 
-        DriveControllEvent e = new DriveControllEvent(acceleration, breaking, steering);
-
-        return e;
+        // Return the Drive Event with the calculated values
+        return new DriveControllEvent(acceleration, braking, steering);
     }
-
-    
-    
-    
-    
-    
-    
     
     // curveBehavior should be beetween 0 and 1. So 0.5 is linear from Startingpoint to 0.
     // 0-0.5 is logarithmic (fast start, slow end) and 0.5-1 is exponentially (slow start, fast End)
