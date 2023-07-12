@@ -4,30 +4,23 @@ using UnityEngine;
 
 public class SidePressureCalculator : ObserveeMonoBehaviour
 {
-    
     [Header("Debug")]
-    [Tooltip("Show DebugLines")]public bool tommysKaeferLines;
-    [Tooltip("Show DebugLogs")]public bool tommysKaeferPressureLogs;
+    public bool tommysKaeferLines;
+    public bool tommysKaeferPressureLogs;
     
-    // Store Calculated Angles
     private Vector3[] _angles;
-    // Store ray holding game objects
+    private Ray _ray;
+    private Configuration _configuration;
     private List<GameObject> _leftRayCasterObjects;
     private List<GameObject> _rightRayCasterObjects;
-    // Store current ray, so only one object is needed
-    private Ray _ray;
-    // Link to Configuration 
-    private Configuration _configuration;
-    
 
-    // Get the configuration from children
     private void Awake() => _configuration = GetComponentInChildren<Configuration>();
-    
+
     private void OnEnable()
     {
         CreateRayCastObjects();
     }
-    
+
     private void OnDisable()
     {
         DestroyRayCastObjects();
@@ -35,8 +28,9 @@ public class SidePressureCalculator : ObserveeMonoBehaviour
     
     private void Update()
     {
-        // Send the calculated pressure event
-        NotifyObservers(new PressureChangeEvent(CalculateCurrentPressure()));
+        // Nicht jedes mal neuen Pressure wenn sich nix ändert todo
+        PressureChangeEvent pressureChangeEvent = new PressureChangeEvent(CalculateCurrentPressure());
+        NotifyObservers(pressureChangeEvent);
     }
 
     private void CreateRayCastObjects()
@@ -47,21 +41,20 @@ public class SidePressureCalculator : ObserveeMonoBehaviour
         
         // Create GameObject
         GameObject tempRayCaster = new GameObject("RayCasterObject");
-        // Set position of object to current object with this component
+        // Set position of object
         tempRayCaster.transform.position = transform.position;
-        // Set parent of GameObject to current object with this component
+        // Set parent of GameObject
         tempRayCaster.transform.SetParent(transform);
         
-        // Calculate all Angles with the parameters from the config
-        CalculateAngle(-1); // Left Side
-        for (int i = 0; i < _configuration.RayCount; i++) // Create Left Side RayGameObjects
+        CalculateAngle(-1);
+        for (int i = 0; i < _configuration.RayCount; i++)
         {
             GameObject caster = Instantiate(tempRayCaster, transform.position, transform.localRotation, transform);
             caster.transform.localRotation = Quaternion.Euler(_angles[i]);
             _leftRayCasterObjects.Add(caster);
         }
-        CalculateAngle(1); // Right Side
-        for (int i = 0; i < _configuration.RayCount; i++) // Create Right Side RayGameObjects
+        CalculateAngle(1);
+        for (int i = 0; i < _configuration.RayCount; i++)
         {
             GameObject caster = Instantiate(tempRayCaster, transform.position, transform.localRotation, transform);
             caster.transform.localRotation = Quaternion.Euler(_angles[i]);
@@ -71,7 +64,7 @@ public class SidePressureCalculator : ObserveeMonoBehaviour
 
     private void DestroyRayCastObjects()
     {
-        // Destroy temporary GameObjects for each side
+        // Destroy temporary GameObjects
         foreach (GameObject o in _leftRayCasterObjects)
         {
             Destroy(o);
@@ -84,7 +77,6 @@ public class SidePressureCalculator : ObserveeMonoBehaviour
     
     private float CalculateCurrentPressure()
     {
-        // Get the Pressure from each side and calculate an average
         float currentPressure = CalculateSidedPressure(_leftRayCasterObjects) - CalculateSidedPressure(_rightRayCasterObjects);
         if(tommysKaeferPressureLogs) Debug.Log("Tommys CurrentPressure: " + currentPressure);
         return currentPressure;
@@ -120,14 +112,11 @@ public class SidePressureCalculator : ObserveeMonoBehaviour
         // Return the calculated pressure
         return pressure;
     }
-    
-    // Send a Ray in down direction of each object in List. Return bool Array with hit info
+
     private bool[] SendRays(List<GameObject> tempRayCasterObjects)
     {
-        // Get Config
         float rayLength = _configuration.MaxRayLength;
         int rayCount = _configuration.RayCount;
-        // Temp Variable for Hits
         bool[] rayHits = new bool[rayCount];
 
         Vector3 currentPosition = transform.position;

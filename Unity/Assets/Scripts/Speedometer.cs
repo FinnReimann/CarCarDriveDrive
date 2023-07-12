@@ -7,16 +7,12 @@ using UnityEngine.TestTools;
 
 public class Speedometer : ObserveeMonoBehaviour
 {
-    // Variable to see the value in the inspector
-    [Header("Exposed Variables")]
-    [SerializeField] private float currentSpeedInKmh;
-    
     private const int QueueSize = 2;
     private Queue<float> _lastValues;
     private Vector3 _lastPosition;
     [Header("Debug Variables")] 
-    [SerializeField] private bool showDebugLogs = false;
-    
+    [SerializeField] private bool debug = false;
+    [SerializeField] private float currentSpeedInKmh;
 
     // Init every last values with 0, and safe current position.
     public void Start()
@@ -43,7 +39,7 @@ public class Speedometer : ObserveeMonoBehaviour
         NotifyObservers(new SpeedChangeEvent(currentSpeed, CalculateRecentAverageSpeed()));
         // Show current speed in the inspector
         currentSpeedInKmh = currentSpeed * 3.6f;
-        if (showDebugLogs)
+        if (debug)
             Debug.Log("Speedometer: CurrentPosition: " + transform.position + " CurrentSpeed: " + currentSpeed + " RecentAverageSpeed: " + CalculateRecentAverageSpeed());
     }
 

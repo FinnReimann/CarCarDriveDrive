@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.Serialization;
 
 public class Driver : MonoBehaviour, Observer
 {
@@ -7,19 +6,17 @@ public class Driver : MonoBehaviour, Observer
     
     [SerializeField] private bool showDebugLog = false;
 
-    // Set the wheelcollider for every wheel
     [Header("WheelColliders")] 
     [SerializeField] private WheelCollider frontLeft;
     [SerializeField] private WheelCollider frontRight;
     [SerializeField] private WheelCollider rearLeft;
     [SerializeField] private WheelCollider rearRight;
     
-    // Config variables
-    [Header("Engine and Break Power")]
-    [SerializeField]private float enginePower = 800.0f;
-    [SerializeField]private float brakeForce = 500.0f;
+    [Header("Acceleration")]
+    [SerializeField]private float accelerationFactor = 500.0f;
+    [SerializeField]private float brakeFactor = 500.0f;
     
-    // Variables in which the current state is saved
+    
     private float _acceleration;
     private float _braking;
     private float _brakeStrength;
@@ -33,32 +30,29 @@ public class Driver : MonoBehaviour, Observer
     private float _targetSteering;
     private float _currentSteering;
 
-    // Register on Observers
     void OnEnable()
     {
         GetComponentInChildren<Brain>().Attach(this);
     }
-    // Deregister on Observers
+    
     void OnDisable()
     {
         GetComponentInChildren<Brain>().Detach(this);
     }
     
-    // In every FixedUpdate (Physics timing)
     private void FixedUpdate()
     {
-        // Acceleration (only to the front wheels)
-        frontLeft.motorTorque = enginePower * _acceleration;
-        frontRight.motorTorque = enginePower * _acceleration;
+        // Acceleration
+        frontLeft.motorTorque = accelerationFactor * _acceleration;
+        frontRight.motorTorque = accelerationFactor * _acceleration;
         
-        // Brake (to all 4 wheels)
-        frontLeft.brakeTorque = brakeForce * _brakeStrength;
-        frontRight.brakeTorque = brakeForce * _brakeStrength;
-        rearLeft.brakeTorque = brakeForce * _brakeStrength;
-        rearRight.brakeTorque = brakeForce * _brakeStrength;
+        // Brake
+        frontLeft.brakeTorque = brakeFactor * _brakeStrength;
+        frontRight.brakeTorque = brakeFactor * _brakeStrength;
+        rearLeft.brakeTorque = brakeFactor * _brakeStrength;
+        rearRight.brakeTorque = brakeFactor * _brakeStrength;
         
         // Steering
-        // If the abs target steering in the same direction and lower, than go slow back.
         float delta = Mathf.Abs(_currentSteering - _targetSteering);
         if (_targetSteering > 0f && (_currentSteering < _targetSteering))
         {
@@ -80,7 +74,6 @@ public class Driver : MonoBehaviour, Observer
         frontRight.steerAngle = maxSteeringAngle * _currentSteering;
     }
     
-    // Check for event type - and if, update cache values
     public void CCDDUpdate(CCDDEvents e)
     {
         if (e is DriveControllEvent driveChange)
