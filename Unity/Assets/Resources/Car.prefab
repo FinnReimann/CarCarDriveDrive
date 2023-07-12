@@ -286,9 +286,14 @@ MonoBehaviour:
   breakingResponse: 0.5
   maxDetectionLength: 10
   obstacleEmergancyBreakDistance: 2
-  layerMask:
+  obstacleBrakeFaktor: 1
+  obstacleRayOffset: {x: 0, y: -1, z: 2}
+  streetBorderlayerMask:
     serializedVersion: 2
     m_Bits: 64
+  obstacleLayerMask:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &8094774728029561661
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -322,8 +327,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d29ac6ada87b21e43a6e34cfa173d0ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  debug: 0
   currentSpeedInKmh: 0
+  showDebugLogs: 0
 --- !u!114 &8094774728029561662
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -368,12 +373,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09b650a08f01ab245893e62f27bad937, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  useDebug: 0
   distance: 0
-  rayOffset: {x: 0, y: -1, z: 2}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 256
+  useDebug: 0
 --- !u!1 &8094774728345781268
 GameObject:
   m_ObjectHideFlags: 0
