@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1" MembersFormat="FullSignature">
+  <Class Name="Brain">
+    <Position X="0.75" Y="3.75" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AARAABAQFAAAAASKAAAAAkAAQEIAABAIAAEAAAgALMA=</HashCode>
+      <FileName>Assets\Scripts\Brain.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="CollisionDetection">
+    <Position X="13.25" Y="3.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AARAAIAAAAQAAAAIAAAAAAAAAEAAAEIIQAEAgCABCEA=</HashCode>
+      <FileName>Assets\Scripts\CollisionDetection.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Configuration">
+    <Position X="28.5" Y="2.75" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>xAAAAIQCAAgESBAAAEEQAQgDASAwISEAAEEgAARJABA=</HashCode>
+      <FileName>Assets\Scripts\Configuration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Driver" BaseTypeListCollapsed="true">
+    <Position X="32.5" Y="4.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AIAABAAABgIAAAAIEBAQAAAAACAABAAYQhQAAQgACAA=</HashCode>
+      <FileName>Assets\Scripts\Driver.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Navigator">
+    <Position X="19.5" Y="3.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AEQAAAAAACAAAIAIAAAAAAAAAAAAAAAAAAEAAAAAAEA=</HashCode>
+      <FileName>Assets\Scripts\Navigator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ChangeEvents">
+    <Position X="10.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\ObserverPattern\Events\ChangeEvents.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="DriveControllEvent" BaseTypeListCollapsed="true">
+    <Position X="35.75" Y="2.75" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAARAAACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\ObserverPattern\Events\DriveControllEvent.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="NavigationEvent" BaseTypeListCollapsed="true">
+    <Position X="35.75" Y="8.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\ObserverPattern\Events\NavigationEvent.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="ObstacleAheadEvent" BaseTypeListCollapsed="true">
+    <Position X="32.5" Y="2.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\ObserverPattern\Events\ObstacleAheadEvent.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="PressureChangeEvent">
+    <Position X="7.5" Y="10.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\ObserverPattern\Events\PressureChangeEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SpeedChangeEvent">
+    <Position X="11.25" Y="10.75" Width="4.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAAAAAAAAAABEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\ObserverPattern\Events\SpeedChangeEvent.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ObserveeMonoBehaviour">
+    <Position X="10.75" Y="1" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAIAAAAAAAAAAIAAAAAAAAAAIAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Assets\Scripts\ObserverPattern\ObserveeMonoBehaviour.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="SidePressureCalculator">
+    <Position X="5.75" Y="3.75" Width="4.75" />
+    <TypeIdentifier>
+      <HashCode>gBVAAAAAAAAgAERAAAAAAAAAAgACAAAIAAEAAAAACUA=</HashCode>
+      <FileName>Assets\Scripts\SidePressureCalculator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Speedometer">
+    <Position X="16.25" Y="3.75" Width="3" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAgqAAACAIAAAABAAAAAAACAAAAAAIAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\Speedometer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CheckPointTest">
+    <Position X="25.25" Y="6.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAQAAAAACAAAAAAAAAAAAAAAAYAAAACAAAgA=</HashCode>
+      <FileName>Assets\Scripts\TestScripts\CheckPointTest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuaternionRay">
+    <Position X="36" Y="5.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>QARAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Assets\Scripts\TestScripts\QuaternionRay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestNavigator">
+    <Position X="19.25" Y="7.5" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAwAEAAAAAAAEAAAAAAAAAAQAAEAAAAAQAAAEAAACgA=</HashCode>
+      <FileName>Assets\Scripts\TestScripts\TestNavigator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="TestObservee">
+    <Position X="11" Y="3.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAgAQAAAACAAAAAgA=</HashCode>
+      <FileName>Assets\Scripts\TestScripts\TestObservee.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="CCDDEvents">
+    <Position X="13.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\Scripts\ObserverPattern\Events\CCDDEvents.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="IObservee">
+    <Position X="25.25" Y="2.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAAIAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Assets\Scripts\ObserverPattern\IObservee.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Observer">
+    <Position X="25.25" Y="4.75" Width="2.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAA=</HashCode>
+      <FileName>Assets\Scripts\ObserverPattern\Observer.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
