@@ -1,42 +1,53 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.TestTools;
 
 public class Speedometer : ObserveeMonoBehaviour
 {
+    // Variable to see the value in the inspector
+    [Header("Exposed Variables")]
+    [SerializeField] private float currentSpeedInKmh;
+    
     private const int QueueSize = 2;
     private Queue<float> _lastValues;
     private Vector3 _lastPosition;
     [Header("Debug Variables")] 
-    [SerializeField] private bool debug = false;
-    private SpeedChangeEvent _lastSpeedChangeEvent;
+    [SerializeField] private bool showDebugLogs = false;
     
-    // Start is called before the first frame update
+
+    // Init every last values with 0, and safe current position.
     public void Start()
     {
-        Debug.Log("Speedometer meldet sich zum dienst");
+        Debug.Log("Speedometer online");
         _lastValues = new Queue<float>(QueueSize);
         for (int i = 0; i < QueueSize; i++)
         {
             _lastValues.Enqueue(0);
         }
         _lastPosition = transform.position;
-        _lastSpeedChangeEvent = new SpeedChangeEvent(-1f,-1f);
     }
-
-    // Update is called once per frame
+    
+    // Trigger calculation of speed. If not moving > return early.
     void FixedUpdate()
     {
-        // Send Speed Data
-        SpeedChangeEvent speedChangeEvent = new SpeedChangeEvent(CalculateSpeed(), CalculateRecentAverageSpeed());
-        if(speedChangeEvent.RecentAverageSpeed != _lastSpeedChangeEvent.RecentAverageSpeed)
-            NotifyObservers(speedChangeEvent);
-        _lastSpeedChangeEvent = speedChangeEvent;
-        if (debug)
-            Debug.Log("Speedometer: CurrentPosition: " + transform.position + " CurrentSpeed: " + speedChangeEvent.CurrentSpeed + " RecentAverageSpeed: " + speedChangeEvent.RecentAverageSpeed);
+        float currentSpeed = CalculateSpeed();
+        if (Math.Abs(currentSpeed) < 0.0001f)
+        {
+            currentSpeedInKmh = 0f;
+            return;
+        }
+        // Send speed event
+        NotifyObservers(new SpeedChangeEvent(currentSpeed, CalculateRecentAverageSpeed()));
+        // Show current speed in the inspector
+        currentSpeedInKmh = currentSpeed * 3.6f;
+        if (showDebugLogs)
+            Debug.Log("Speedometer: CurrentPosition: " + transform.position + " CurrentSpeed: " + currentSpeed + " RecentAverageSpeed: " + CalculateRecentAverageSpeed());
     }
 
+    // calculate the speed using the last and current position
     float CalculateSpeed()
     {
         Vector3 currentPosition = transform.position;
@@ -47,12 +58,14 @@ public class Speedometer : ObserveeMonoBehaviour
         return speed;
     }
 
+    // Safe current speed in queue and delete oldest
     void UpdatLastValuesQueue(float speed)
     {
         _lastValues.Enqueue(speed);
         _lastValues.Dequeue();
     }
 
+    // calculate the average speed from all values in the queue
     private float CalculateRecentAverageSpeed()
     {
         float result = 0f;
@@ -62,6 +75,4 @@ public class Speedometer : ObserveeMonoBehaviour
         }
         return result/QueueSize;
     }
-
-    public bool IsTestFinished { get; }
 }

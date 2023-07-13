@@ -20,4 +20,6 @@ public class SpeedChangeEvent : ChangeEvents
     public float CurrentSpeed {set; get; }
     public float RecentAverageSpeed {set; get; }
     
+    public float Speed {set; get; }
+    
 }

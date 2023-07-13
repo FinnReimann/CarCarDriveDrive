@@ -3,34 +3,46 @@ using UnityEngine;
 
 public class Brain : ObserveeMonoBehaviour, Observer
 {
-    //(Acceleration Response): Leisurely, Dynamic
-    [SerializeField][Range(0f, 1f)][Tooltip("0 is Leisurely(Exp), 0.5 is average (Lin) ,1 is Dynamic(Log).")]
-    private float accelerationResponse = 0.5f;
-    //(Starting Behavior): Gentle, Powerful
-    [SerializeField][Range(0f, 1f)][Tooltip("Close to 0 is Gentle, 1 is Powerful. 0 is no Acceleration at all")]
-    private float startingBehabior = 0.75f;
-    //(Breaking Response): Early, Late
-    [SerializeField][Range(0f, 1f)][Tooltip("Close to 0 is Early Response, 1 is late Response")]
-    private float breakingResponse = 0.5f;
-
+    // (Acceleration Response): Leisurely, Dynamic
+    private float _accelerationResponse = 0.5f;
+    // (Starting Behavior): Gentle, Powerful
+    private float _startingBehabior = 0.75f;
+    // (Breaking Response): Early, Late
+    private float _breakingResponse = 0.5f;
+    
+    // Cached Config Variables
+    private float _obstacleEmergancyDistance;
+    private float _targetSpeed;
+    private float _obstacleBrakeFaktor;
+    
+    // Variables in which the current state is saved
+    private float _obstacleDistance = -1f;
+    private float _currentSpeed;
+    private float _currentPressure;
+    
+    // Link to Configuration
+    private Configuration _configuration;
+    
+    // Debug Variables for test use, without other Components
     [Header("Debug Variables")] 
     [SerializeField] private bool useDebugTarget = false;
     [SerializeField] private bool useDebugTacho = false;
     [SerializeField] private bool useDebugPressur = false;
+    [SerializeField] private bool useDebugObstacleDistance = false;
     [SerializeField] private bool showDebugLog = false;
     [SerializeField] private float debug_currentSpeed = 0f;
     [SerializeField] private float debug_targetSpeed = 100f;
     [SerializeField] private float debug_currentPressur = 0f;
+    [SerializeField] private float debug_obstacleDistance = -1f;
     
-    private float _currentSpeed;
-    private float _currentPressure;
-    private float _targetSpeed;
 
-    private Configuration _configuration;
-
+    // Get the configuration from children
     private void Awake() => _configuration = GetComponentInChildren<Configuration>();
+    
+    // Register on Observers and throw Errors if not find
     void OnEnable()
     {
+        GetConfig();
         try
         {
             GetComponentInChildren<Speedometer>().Attach(this);
@@ -39,10 +51,21 @@ public class Brain : ObserveeMonoBehaviour, Observer
         }
         catch (Exception e)
         {
-            Debug.LogWarning("The Brain needs a Speedometer, SidePressureCalulator and a Navigator to work proper");
+            Debug.LogWarning("The Brain needs a Speedometer, SidePressureCalculator and a Navigator to work proper. Exception:" + e);
         }
+        
+        try
+        {
+            GetComponentInChildren<CollisionDetection>().Attach(this);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("If you want to use the Obstacledetection, you must ad a CollisionDetection Component. Exception:" + e);
+        }
+        
+        GetConfig();
     }
-    
+    // Deregister on Observers and throw Errors if not find
     void OnDisable()
     {
         try
@@ -53,11 +76,20 @@ public class Brain : ObserveeMonoBehaviour, Observer
         }
         catch (Exception e)
         {
-            Debug.LogWarning("The Brain needs a Speedometer, SidePressureCalulator and a Navigator to work proper");
+            Debug.LogWarning("The Brain needs a Speedometer, SidePressureCalculator and a Navigator to work proper. Exception:" + e);
+        }
+
+        try
+        {
+            GetComponentInChildren<CollisionDetection>().Detach(this);
+        }
+        catch (Exception e)
+        {
+            Debug.LogWarning("If you want to use the Obstacledetection, you must ad a CollisionDetection Component. Exception:" + e);
         }
     }
 
-    // Update is called once per frame
+    // Notify Observer (Driver) with Calculated Drive Control. Get the debug values if they where used.
     void Update()
     {
         if (useDebugTarget)
@@ -66,10 +98,23 @@ public class Brain : ObserveeMonoBehaviour, Observer
             _currentSpeed = debug_currentSpeed;
         if (useDebugPressur)
             _currentPressure = debug_currentPressur;
+        if (useDebugObstacleDistance)
+            _obstacleDistance = debug_obstacleDistance;
         
-        NotifyObservers(CalculateDriveControll());
+        NotifyObservers(CalculateDriveControl());
     }
 
+    // Read Config from Configclass and cache them in variables
+    private void GetConfig()
+    {
+        _accelerationResponse = _configuration.AccelerationResponse;
+        _startingBehabior = _configuration.StartingBehabior;
+        _breakingResponse = _configuration.BreakingResponse;
+        _obstacleEmergancyDistance = _configuration.ObstacleEmergancyBreakDistance;
+        _obstacleBrakeFaktor = _configuration.ObstacleBrakeFaktor;
+    }
+
+    // Check for event type - and if, update cache values
     public void CCDDUpdate(CCDDEvents e)
     {
         if (e is SpeedChangeEvent speedChangeEvent)
@@ -93,40 +138,61 @@ public class Brain : ObserveeMonoBehaviour, Observer
             if(!useDebugTarget)
                 _targetSpeed = navigationEvent.TargetSpeed;
         }
+
+        if (e is ObstacleAheadEvent obstacleAheadEvent)
+        {
+            if(!useDebugObstacleDistance)
+                _obstacleDistance = obstacleAheadEvent.Distance;
+        }
     }
 
-    private DriveControllEvent CalculateDriveControll()
+    // Calculate the DriveControllEvent based on the current values
+    private DriveControllEvent CalculateDriveControl()
     {
-        // Acceleration and braking
+        // Init with default Values
         float acceleration = 0f;
-        float breaking = 0f;
+        float braking = 0f;
         float steering = 0f;
+        float targetSpeed = _targetSpeed;
         
-        float speedRatio = _currentSpeed / _targetSpeed;
+        // Check if an Obstacle is ahead. (-1 == no Obstacle)
+        if (_obstacleDistance >= 0f)
+        {
+            // If the Distance is lower than the configurable EmergancyDistance, return early with full braking 
+            if (_obstacleDistance <= _obstacleEmergancyDistance)
+            {
+                return new DriveControllEvent(acceleration, 1f, steering);
+            }
+            // Set the target speed to the obstacle distance multiplied the configurable factor
+            targetSpeed = _obstacleDistance * _obstacleBrakeFaktor;
+        }
+        
+        // Calculate the speed ratio from the current speed to the target speed
+        float speedRatio = _currentSpeed / targetSpeed;
         if (speedRatio < 1)
         {   // Accelerate
-            acceleration = CalcCurve(speedRatio, startingBehabior, accelerationResponse);
+            acceleration = CalcCurve(speedRatio, _startingBehabior, _accelerationResponse);
             if (showDebugLog)
-                Debug.Log("Speed Ratio: " + _currentSpeed / _targetSpeed + " acceleration: " + acceleration);
+                Debug.Log("Speed Ratio: " + _currentSpeed / targetSpeed + " acceleration: " + acceleration);
             
         }
         else if (speedRatio > 1)
-        {   // Break
-            breaking = 1f-CalcCurve(speedRatio - 1f, 1f, breakingResponse);
+        {   // Brake
+            braking = 1f-CalcCurve(speedRatio - 1f, 1f, _breakingResponse);
             if (showDebugLog)
-                Debug.Log("Speed Ratio: " + _currentSpeed / _targetSpeed + " breaking: " + breaking);
+                Debug.Log("Speed Ratio: " + _currentSpeed / targetSpeed + " breaking: " + braking);
         }
+        // If the target speed is 0, activate the parking brake
         if (_targetSpeed == 0f)
-            breaking = 1;
+            braking = 1;
 
-        // Steering
+        // Steering; just uses the current pressure value. Modifications should placed here.
         steering = _currentPressure;
 
-        DriveControllEvent e = new DriveControllEvent(acceleration, breaking, steering);
-
-        return e;
+        // Return the Drive Event with the calculated values
+        return new DriveControllEvent(acceleration, braking, steering);
     }
-
+    
     // curveBehavior should be beetween 0 and 1. So 0.5 is linear from Startingpoint to 0.
     // 0-0.5 is logarithmic (fast start, slow end) and 0.5-1 is exponentially (slow start, fast End)
     private float CalcCurve(float input,float startingPoint, float curveBehavior)
